@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تسجيل الدخول | منصة EduPulse التعليمية</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts: Cairo -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#eef2ff',
+                            100: '#e0e7ff',
+                            500: '#6366f1',
+                            600: '#4f46e5',
+                            700: '#4338ca',
+                            900: '#312e81',
+                        },
+                        emerald: {
+                            500: '#10b981',
+                            600: '#059669',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Cairo', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Cairo', sans-serif;
+            background-color: #0f172a;
+        }
+
+        .glass-card {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .glass-input {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            transition: all 0.3s ease;
+        }
+
+        .glass-input:focus {
+            background: rgba(15, 23, 42, 0.85);
+            border-color: #6366f1;
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.2);
+        }
+
+        .glow-orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            z-index: 0;
+            opacity: 0.5;
+            animation: float 10s infinite alternate ease-in-out;
+        }
+
+        @keyframes float {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(30px, -40px) scale(1.1); }
+        }
+
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body class="min-h-screen text-slate-100 flex items-center justify-center p-4 sm:p-6 md:p-8 relative overflow-x-hidden">
+
+    <!-- Background Orbs -->
+    <div class="glow-orb w-96 h-96 bg-indigo-600 -top-10 -right-10"></div>
+    <div class="glow-orb w-80 h-80 bg-purple-600 bottom-0 left-0" style="animation-delay: -5s;"></div>
+    <div class="glow-orb w-72 h-72 bg-emerald-600 top-1/2 left-1/3" style="animation-delay: -2s;"></div>
+
+    <!-- Toast Container -->
+    <div id="toast" class="fixed top-5 left-1/2 -translate-x-1/2 z-50 flex items-center gap-3 px-6 py-4 rounded-2xl shadow-2xl transition-all duration-500 opacity-0 transform -translate-y-10 pointer-events-none border">
+        <div id="toast-icon" class="w-8 h-8 rounded-full flex items-center justify-center text-white shrink-0"></div>
+        <div>
+            <h4 id="toast-title" class="font-bold text-sm text-white"></h4>
+            <p id="toast-msg" class="text-xs text-slate-200 mt-0.5"></p>
+        </div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="w-full max-w-5xl rounded-3xl glass-card shadow-2xl overflow-hidden grid grid-cols-1 lg:grid-cols-12 relative z-10 border border-slate-700/50">
+        
+        <!-- Right Banner -->
+        <div class="lg:col-span-5 bg-gradient-to-br from-indigo-900/80 via-slate-900/90 to-slate-950 p-8 lg:p-12 flex flex-col justify-between relative overflow-hidden border-b lg:border-b-0 lg:border-l border-slate-700/50">
+            <div class="absolute inset-0 opacity-10 bg-[radial-gradient(#6366f1_1px,transparent_1px)] [background-size:16px_16px]"></div>
+            
+            <div class="relative z-10">
+                <div class="flex items-center gap-3">
+                    <div class="w-12 h-12 bg-gradient-to-tr from-indigo-500 to-indigo-600 rounded-2xl flex items-center justify-center shadow-lg shadow-indigo-500/30 text-white font-black text-2xl tracking-wider">
+                        E<span class="text-emerald-400">P</span>
+                    </div>
+                    <div>
+                        <h1 class="text-2xl font-black tracking-wide text-white">EduPulse</h1>
+                        <p class="text-xs text-indigo-300 font-medium">منصة الدورات التعليمية الشاملة</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="my-8 relative z-10 text-center lg:text-right">
+                <div class="relative w-48 h-48 mx-auto mb-6 flex items-center justify-center">
+                    <div class="absolute inset-0 bg-indigo-500/20 rounded-full animate-ping opacity-20"></div>
+                    <div class="w-40 h-40 bg-gradient-to-tr from-indigo-600/40 to-emerald-500/30 rounded-full border border-indigo-400/30 flex items-center justify-center backdrop-blur-md shadow-inner">
+                        <i class="fa-solid fa-graduation-cap text-6xl text-indigo-300 drop-shadow-lg"></i>
+                    </div>
+                    <div class="absolute top-2 right-2 bg-slate-800/90 border border-slate-700 px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-2 shadow-lg">
+                        <i class="fa-solid fa-bolt text-amber-400"></i>
+                        <span>تفعيل سريع</span>
+                    </div>
+                    <div class="absolute bottom-2 left-2 bg-slate-800/90 border border-slate-700 px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-2 shadow-lg">
+                        <i class="fa-solid fa-shield-halved text-emerald-400"></i>
+                        <span>حماية تشفيرية</span>
+                    </div>
+                </div>
+
+                <h2 class="text-2xl font-extrabold text-white mb-3">مرحباً بك في رحلتك التعليمية!</h2>
+                <p class="text-slate-300 text-sm leading-relaxed">
+                    ادخل إلى حسابك باستخدام كود الطالب الخاص بك لمتابعة الدروس والوصول المباشر للمحتوى التعليمي.
+                </p>
+            </div>
+
+            <div class="relative z-10 pt-6 border-t border-slate-800/80 flex items-center justify-between text-xs text-slate-400">
+                <span>© 2026 EduPulse LMS</span>
+                <a href="admin.html" class="hover:text-indigo-400 transition-colors font-bold flex items-center gap-1">
+                    <i class="fa-solid fa-user-shield text-xs"></i>
+                    <span>لوحة التحكم (الأدمن)</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- Left Interactive Forms -->
+        <div class="lg:col-span-7 p-6 sm:p-10 md:p-12 flex flex-col justify-center bg-slate-900/60">
+            
+            <!-- Auth Switcher Tabs -->
+            <div class="flex p-1.5 bg-slate-800/80 rounded-2xl mb-8 border border-slate-700/60">
+                <button id="tab-login" onclick="switchTab('login')" class="flex-1 py-3 px-4 rounded-xl text-sm font-bold transition-all duration-300 flex items-center justify-center gap-2 bg-indigo-600 text-white shadow-lg">
+                    <i class="fa-solid fa-right-to-bracket text-xs"></i>
+                    <span>تسجيل الدخول</span>
+                </button>
+                <button id="tab-register" onclick="switchTab('register')" class="flex-1 py-3 px-4 rounded-xl text-sm font-bold text-slate-400 hover:text-white transition-all duration-300 flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-key text-xs"></i>
+                    <span>تفعيل كود جديد</span>
+                </button>
+            </div>
+
+            <!-- LOGIN FORM -->
+            <form id="form-login" onsubmit="handleLogin(event)" class="space-y-5">
+                <div>
+                    <label class="block text-xs font-bold text-slate-300 mb-2">الكود الشخصي للطالب / الكورس</label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none text-slate-400">
+                            <i class="fa-solid fa-id-card"></i>
+                        </div>
+                        <input type="text" id="login-code" required placeholder="مثال: EP-88902" dir="ltr" 
+                            class="w-full glass-input text-white text-left pl-4 pr-11 py-3.5 rounded-xl font-mono text-sm placeholder:text-slate-500 placeholder:text-right focus:outline-none">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-300 mb-2">كلمة المرور</label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none text-slate-400">
+                            <i class="fa-solid fa-lock"></i>
+                        </div>
+                        <input type="password" id="login-password" placeholder="••••••••" dir="ltr"
+                            class="w-full glass-input text-white text-left pl-11 pr-11 py-3.5 rounded-xl text-sm placeholder:text-slate-500 focus:outline-none">
+                        <button type="button" onclick="togglePasswordVisibility('login-password', 'login-eye')" class="absolute inset-y-0 left-0 pl-4 flex items-center text-slate-400 hover:text-indigo-400 transition-colors">
+                            <i id="login-eye" class="fa-solid fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-between text-xs pt-1">
+                    <label class="flex items-center gap-2.5 text-slate-300 cursor-pointer select-none">
+                        <input type="checkbox" id="remember-me" class="w-4 h-4 rounded border-slate-700 bg-slate-800 text-indigo-600 focus:ring-indigo-500 focus:ring-offset-slate-900">
+                        <span>تذكر بياناتي</span>
+                    </label>
+                    <a href="https://wa.me/201070813027" target="_blank" class="text-indigo-400 hover:text-indigo-300 font-semibold transition-colors">
+                        نسيت كلمة المرور؟
+                    </a>
+                </div>
+
+                <button type="submit" id="btn-login" class="w-full py-4 bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-500 hover:to-indigo-600 text-white font-bold rounded-xl shadow-lg shadow-indigo-600/30 transition-all duration-300 transform active:scale-[0.99] flex items-center justify-center gap-2">
+                    <span>الدخول إلى المنصة</span>
+                    <i class="fa-solid fa-arrow-left text-xs"></i>
+                </button>
+            </form>
+
+            <!-- REGISTER / CODE ACTIVATION FORM -->
+            <form id="form-register" onsubmit="handleRegister(event)" class="space-y-4 hidden">
+                <div>
+                    <label class="block text-xs font-bold text-slate-300 mb-1.5">الاسم الكامل للطالب</label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none text-slate-400">
+                            <i class="fa-solid fa-user"></i>
+                        </div>
+                        <input type="text" id="reg-name" required placeholder="أدخل اسمك الثلاثي" 
+                            class="w-full glass-input text-white pr-11 pl-4 py-3 rounded-xl text-sm placeholder:text-slate-500 focus:outline-none">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-300 mb-1.5">كود التسجيل / التفعيل الخاص بك</label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none text-slate-400">
+                            <i class="fa-solid fa-barcode"></i>
+                        </div>
+                        <input type="text" id="reg-code" required placeholder="EP-XXXXX" dir="ltr"
+                            class="w-full glass-input text-white text-left pl-4 pr-11 py-3 rounded-xl font-mono text-sm placeholder:text-slate-500 placeholder:text-right focus:outline-none">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-300 mb-1.5">تعيين كلمة مرور جديدة</label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none text-slate-400">
+                            <i class="fa-solid fa-key"></i>
+                        </div>
+                        <input type="password" id="reg-password" placeholder="8 أحرف/أرقام على الأقل" dir="ltr"
+                            class="w-full glass-input text-white text-left pl-11 pr-11 py-3 rounded-xl text-sm placeholder:text-slate-500 focus:outline-none">
+                        <button type="button" onclick="togglePasswordVisibility('reg-password', 'reg-eye')" class="absolute inset-y-0 left-0 pl-4 flex items-center text-slate-400 hover:text-indigo-400 transition-colors">
+                            <i id="reg-eye" class="fa-solid fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="pt-2">
+                    <button type="submit" id="btn-register" class="w-full py-3.5 bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-500 hover:to-emerald-600 text-white font-bold rounded-xl shadow-lg shadow-emerald-600/30 transition-all duration-300 transform active:scale-[0.99] flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-check-circle"></i>
+                        <span>تفعيل الكود وإنشاء الحساب</span>
+                    </button>
+                </div>
+            </form>
+
+            <div class="mt-8 pt-6 border-t border-slate-800 flex items-center justify-between text-xs text-slate-400 bg-slate-800/30 p-3.5 rounded-xl border border-slate-700/40">
+                <div class="flex items-center gap-2">
+                    <i class="fa-solid fa-circle-info text-indigo-400 text-sm"></i>
+                    <span>لم تحصل على كود الطالب حتى الآن؟</span>
+                </div>
+                <a href="https://wa.me/201070813027" target="_blank" class="text-emerald-400 hover:underline font-bold flex items-center gap-1">
+                    <i class="fa-brands fa-whatsapp text-sm"></i>
+                    <span>تواصل معنا</span>
+                </a>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Firebase Connection Script -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getFirestore, collection, getDocs, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBE4VrKYlT3mBWNpWNTBgjaNlGulcv-Mww",
+            authDomain: "edupulse-4d175.firebaseapp.com",
+            projectId: "edupulse-4d175",
+            storageBucket: "edupulse-4d175.firebasestorage.app",
+            messagingSenderId: "514388810310",
+            appId: "1:514388810310:web:d4cd7f5b01ad398d2a8847"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        window.db = db;
+        window.getDocs = getDocs;
+        window.collection = collection;
+        window.doc = doc;
+        window.updateDoc = updateDoc;
+    </script>
+
+    <!-- UI Logic Script -->
+    <script>
+        function switchTab(type) {
+            const tabLogin = document.getElementById('tab-login');
+            const tabRegister = document.getElementById('tab-register');
+            const formLogin = document.getElementById('form-login');
+            const formRegister = document.getElementById('form-register');
+
+            if (type === 'login') {
+                tabLogin.className = 'flex-1 py-3 px-4 rounded-xl text-sm font-bold transition-all duration-300 flex items-center justify-center gap-2 bg-indigo-600 text-white shadow-lg';
+                tabRegister.className = 'flex-1 py-3 px-4 rounded-xl text-sm font-bold text-slate-400 hover:text-white transition-all duration-300 flex items-center justify-center gap-2';
+                formLogin.classList.remove('hidden');
+                formRegister.classList.add('hidden');
+            } else {
+                tabRegister.className = 'flex-1 py-3 px-4 rounded-xl text-sm font-bold transition-all duration-300 flex items-center justify-center gap-2 bg-emerald-600 text-white shadow-lg';
+                tabLogin.className = 'flex-1 py-3 px-4 rounded-xl text-sm font-bold text-slate-400 hover:text-white transition-all duration-300 flex items-center justify-center gap-2';
+                formRegister.classList.remove('hidden');
+                formLogin.classList.add('hidden');
+            }
+        }
+
+        function togglePasswordVisibility(inputId, eyeId) {
+            const input = document.getElementById(inputId);
+            const eye = document.getElementById(eyeId);
+
+            if (input.type === 'password') {
+                input.type = 'text';
+                eye.classList.remove('fa-eye');
+                eye.classList.add('fa-eye-slash');
+            } else {
+                input.type = 'password';
+                eye.classList.remove('fa-eye-slash');
+                eye.classList.add('fa-eye');
+            }
+        }
+
+        function showToast(title, message, type = 'success') {
+            const toast = document.getElementById('toast');
+            const toastIcon = document.getElementById('toast-icon');
+            document.getElementById('toast-title').innerText = title;
+            document.getElementById('toast-msg').innerText = message;
+
+            if (type === 'success') {
+                toast.className = 'fixed top-5 left-1/2 -translate-x-1/2 z-50 flex items-center gap-3 px-6 py-4 rounded-2xl shadow-2xl transition-all duration-500 bg-slate-900/90 border-emerald-500/50 text-white backdrop-blur-lg translate-y-0 opacity-100';
+                toastIcon.className = 'w-8 h-8 rounded-full bg-emerald-500 flex items-center justify-center text-white shrink-0';
+                toastIcon.innerHTML = '<i class="fa-solid fa-check"></i>';
+            } else {
+                toast.className = 'fixed top-5 left-1/2 -translate-x-1/2 z-50 flex items-center gap-3 px-6 py-4 rounded-2xl shadow-2xl transition-all duration-500 bg-slate-900/90 border-red-500/50 text-white backdrop-blur-lg translate-y-0 opacity-100';
+                toastIcon.className = 'w-8 h-8 rounded-full bg-red-500 flex items-center justify-center text-white shrink-0';
+                toastIcon.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i>';
+            }
+
+            setTimeout(() => {
+                toast.classList.add('-translate-y-10', 'opacity-0');
+                toast.classList.remove('translate-y-0', 'opacity-100');
+            }, 3500);
+        }
+
+        async function handleLogin(e) {
+            e.preventDefault();
+            const btn = document.getElementById('btn-login');
+            const inputCode = document.getElementById('login-code').value.trim();
+
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa-solid fa-spinner animate-spin"></i> <span>جاري التحقق سحابياً...</span>';
+
+            try {
+                const querySnapshot = await window.getDocs(window.collection(window.db, "codes"));
+                let foundCode = null;
+
+                querySnapshot.forEach((docSnap) => {
+                    let data = docSnap.data();
+                    if (data.code && data.code.toLowerCase() === inputCode.toLowerCase()) {
+                        foundCode = { id: docSnap.id, ...data };
+                    }
+                });
+
+                if (!foundCode) {
+                    showToast('خطأ في الدخول', 'الكود غير موجود في لوحة الأدمن، يرجى التواصل مع الإدارة.', 'error');
+                    btn.disabled = false;
+                    btn.innerHTML = '<span>الدخول إلى المنصة</span> <i class="fa-solid fa-arrow-left text-xs"></i>';
+                    return;
+                }
+
+                if (foundCode.status === 'معطل') {
+                    showToast('الكود معطل', 'هذا الكود معطل حالياً من الأدمن، يرجى التواصل مع الدعم.', 'error');
+                    btn.disabled = false;
+                    btn.innerHTML = '<span>الدخول إلى المنصة</span> <i class="fa-solid fa-arrow-left text-xs"></i>';
+                    return;
+                }
+
+                let studentName = (foundCode.student && foundCode.student !== 'غير مخصص') ? foundCode.student : 'طالب جديد';
+                localStorage.setItem('ep_logged_user', JSON.stringify({ name: studentName, code: foundCode.code }));
+
+                showToast('تم تسجيل الدخول بنجاح!', `مرحباً بك يا ${studentName}، جاري توجيهك للمنصة...`, 'success');
+                btn.innerHTML = '<i class="fa-solid fa-check"></i> <span>تم الدخول</span>';
+                
+                setTimeout(() => {
+                    window.location.href = 'dashboard.html';
+                }, 1000);
+            } catch (err) {
+                showToast('خطأ في الاتصال', 'تعذر الاتصال بقاعدة البيانات السحابية.', 'error');
+                btn.disabled = false;
+                btn.innerHTML = '<span>الدخول إلى المنصة</span> <i class="fa-solid fa-arrow-left text-xs"></i>';
+            }
+        }
+
+        async function handleRegister(e) {
+            e.preventDefault();
+            const btn = document.getElementById('btn-register');
+            const name = document.getElementById('reg-name').value.trim();
+            const inputCode = document.getElementById('reg-code').value.trim();
+
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa-solid fa-spinner animate-spin"></i> <span>جاري تفعيل الكود...</span>';
+
+            try {
+                const querySnapshot = await window.getDocs(window.collection(window.db, "codes"));
+                let targetDocId = null;
+                let foundCode = null;
+
+                querySnapshot.forEach((docSnap) => {
+                    let data = docSnap.data();
+                    if (data.code && data.code.toLowerCase() === inputCode.toLowerCase()) {
+                        targetDocId = docSnap.id;
+                        foundCode = data;
+                    }
+                });
+
+                if (!targetDocId) {
+                    showToast('خطأ في التفعيل', 'عذراً، هذا الكود غير مسجل بصفحة الأدمن. اتصل بالدعم الفني.', 'error');
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="fa-solid fa-check-circle"></i> <span>تفعيل الكود وإنشاء الحساب</span>';
+                    return;
+                }
+
+                if (foundCode.status === 'معطل') {
+                    showToast('الكود معطل', 'عذراً، هذا الكود تم تعطيله من قبل لوحة الأدمن.', 'error');
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="fa-solid fa-check-circle"></i> <span>تفعيل الكود وإنشاء الحساب</span>';
+                    return;
+                }
+
+                await window.updateDoc(window.doc(window.db, "codes", targetDocId), {
+                    student: name,
+                    status: 'نشط'
+                });
+
+                localStorage.setItem('ep_logged_user', JSON.stringify({ name: name, code: inputCode }));
+
+                showToast('تم تفعيل الحساب بنجاح!', `مرحباً بك يا ${name}، تم ربط الكود بملفك الخاص.`, 'success');
+                btn.innerHTML = '<i class="fa-solid fa-check"></i> <span>تم التفعيل</span>';
+                
+                setTimeout(() => {
+                    window.location.href = 'dashboard.html';
+                }, 1000);
+            } catch (err) {
+                showToast('خطأ في التفعيل', 'تعذر تحديث البيانات في قاعدة البيانات.', 'error');
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fa-solid fa-check-circle"></i> <span>تفعيل الكود وإنشاء الحساب</span>';
+            }
+        }
+    </script>
+</body>
+</html>
