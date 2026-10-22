@@ -47,348 +47,385 @@
         </div>
     </div>
 
-    <!-- Header Navigation -->
-    <header class="relative z-20 border-b border-slate-800 bg-slate-900/80 backdrop-blur-md sticky top-0 px-4 sm:px-8 py-4 flex items-center justify-between">
-        <div class="flex items-center gap-4">
-            <div class="w-10 h-10 bg-gradient-to-tr from-indigo-500 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg text-white font-black text-xl">
-                E<span class="text-emerald-400">P</span>
+    <!-- 1. ADMIN AUTH LOGIN OVERLAY -->
+    <div id="admin-login-overlay" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/90 backdrop-blur-md">
+        <div class="glass-card max-w-md w-full p-8 rounded-3xl space-y-6 border border-indigo-500/30 text-center shadow-2xl">
+            <div class="w-16 h-16 bg-gradient-to-tr from-indigo-500 to-indigo-700 rounded-2xl flex items-center justify-center text-white font-black text-3xl mx-auto shadow-lg shadow-indigo-500/20">
+                <i class="fa-solid fa-user-shield"></i>
             </div>
             <div>
-                <div class="flex items-center gap-2">
-                    <h1 class="text-lg font-black tracking-wide text-white">EduPulse</h1>
-                    <span class="px-2 py-0.5 bg-amber-500/20 text-amber-400 border border-amber-500/30 rounded-md text-[10px] font-bold">لوحة المدير السحابية</span>
+                <h2 class="text-xl font-extrabold text-white">لوحة المدير السحابية</h2>
+                <p class="text-xs text-slate-400 mt-1">منطقة محمية - أدخل كلمة مرور الأدمن للمتابعة</p>
+            </div>
+
+            <form onsubmit="handleAdminLogin(event)" class="space-y-4 text-right">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1.5">كلمة مرور الأدمن *</label>
+                    <input type="password" id="admin-password" required placeholder="••••••••" dir="ltr"
+                        class="w-full glass-input text-white text-center py-3 px-4 rounded-xl text-sm font-mono focus:outline-none">
                 </div>
-                <p class="text-xs text-slate-400">إدارة الكورسات، أكواد الطلاب، والدكاترة المحاضرين</p>
+
+                <button type="submit" class="w-full py-3.5 bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-500 hover:to-indigo-600 text-white font-bold rounded-xl shadow-lg shadow-indigo-600/30 transition text-xs flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-key"></i>
+                    <span>تسجيل الدخول للوحة التحكم</span>
+                </button>
+            </form>
+
+            <div class="pt-4 border-t border-slate-800 text-center text-xs text-slate-400">
+                <span>الكلمة الافتراضية: <code class="text-amber-400 font-mono">ADMIN2026</code></span>
             </div>
         </div>
+    </div>
 
-        <div class="flex items-center gap-3">
-            <a href="teacher.html" target="_blank" class="flex items-center gap-2 bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-400 border border-emerald-500/30 px-3.5 py-2 rounded-xl text-xs font-semibold transition">
-                <i class="fa-solid fa-user-doctor text-sm"></i>
-                <span>بوابة الدكاترة</span>
-            </a>
-            <a href="dashboard.html" class="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded-xl text-xs font-bold transition shadow-lg shadow-indigo-600/30">
-                <i class="fa-solid fa-globe"></i>
-                <span>معاينة المنصة</span>
-            </a>
-        </div>
-    </header>
-
-    <!-- Main Section -->
-    <main class="relative z-10 flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8 space-y-8">
-        
-        <!-- Stats Bar -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            <div class="glass-card p-5 rounded-2xl flex items-center justify-between">
-                <div>
-                    <p class="text-xs font-semibold text-slate-400">إجمالي الأكواد</p>
-                    <h3 id="stat-total-codes" class="text-2xl font-black text-white mt-1">0</h3>
+    <!-- 2. MAIN ADMIN DASHBOARD CONTENT (HIDDEN BY DEFAULT) -->
+    <div id="admin-main-content" class="hidden flex-1 flex flex-col">
+        <!-- Header Navigation -->
+        <header class="relative z-20 border-b border-slate-800 bg-slate-900/80 backdrop-blur-md sticky top-0 px-4 sm:px-8 py-4 flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                <div class="w-10 h-10 bg-gradient-to-tr from-indigo-500 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg text-white font-black text-xl">
+                    E<span class="text-emerald-400">P</span>
                 </div>
-                <div class="w-12 h-12 bg-indigo-500/20 rounded-xl flex items-center justify-center text-indigo-400 text-xl border border-indigo-500/30">
-                    <i class="fa-solid fa-barcode"></i>
+                <div>
+                    <div class="flex items-center gap-2">
+                        <h1 class="text-lg font-black tracking-wide text-white">EduPulse</h1>
+                        <span class="px-2 py-0.5 bg-amber-500/20 text-amber-400 border border-amber-500/30 rounded-md text-[10px] font-bold">لوحة المدير السحابية</span>
+                    </div>
+                    <p class="text-xs text-slate-400">إدارة الكورسات، أكواد الطلاب، والدكاترة المحاضرين</p>
                 </div>
             </div>
 
-            <div class="glass-card p-5 rounded-2xl flex items-center justify-between">
-                <div>
-                    <p class="text-xs font-semibold text-slate-400">الكورسات المتاحة</p>
-                    <h3 id="stat-total-courses" class="text-2xl font-black text-white mt-1">0</h3>
+            <div class="flex items-center gap-3">
+                <button onclick="logoutAdmin()" class="flex items-center gap-2 bg-rose-500/20 hover:bg-rose-500/30 text-rose-400 border border-rose-500/30 px-3.5 py-2 rounded-xl text-xs font-bold transition">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                    <span>قفل الجلسة</span>
+                </button>
+                <a href="teacher.html" target="_blank" class="hidden sm:flex items-center gap-2 bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-400 border border-emerald-500/30 px-3.5 py-2 rounded-xl text-xs font-semibold transition">
+                    <i class="fa-solid fa-user-doctor text-sm"></i>
+                    <span>بوابة الدكاترة</span>
+                </a>
+                <a href="dashboard.html" class="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded-xl text-xs font-bold transition shadow-lg shadow-indigo-600/30">
+                    <i class="fa-solid fa-globe"></i>
+                    <span>معاينة المنصة</span>
+                </a>
+            </div>
+        </header>
+
+        <!-- Main Section -->
+        <main class="relative z-10 flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8 space-y-8">
+            
+            <!-- Stats Bar -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div class="glass-card p-5 rounded-2xl flex items-center justify-between">
+                    <div>
+                        <p class="text-xs font-semibold text-slate-400">إجمالي الأكواد</p>
+                        <h3 id="stat-total-codes" class="text-2xl font-black text-white mt-1">0</h3>
+                    </div>
+                    <div class="w-12 h-12 bg-indigo-500/20 rounded-xl flex items-center justify-center text-indigo-400 text-xl border border-indigo-500/30">
+                        <i class="fa-solid fa-barcode"></i>
+                    </div>
                 </div>
-                <div class="w-12 h-12 bg-emerald-500/20 rounded-xl flex items-center justify-center text-emerald-400 text-xl border border-emerald-500/30">
-                    <i class="fa-solid fa-book-open"></i>
+
+                <div class="glass-card p-5 rounded-2xl flex items-center justify-between">
+                    <div>
+                        <p class="text-xs font-semibold text-slate-400">الكورسات المتاحة</p>
+                        <h3 id="stat-total-courses" class="text-2xl font-black text-white mt-1">0</h3>
+                    </div>
+                    <div class="w-12 h-12 bg-emerald-500/20 rounded-xl flex items-center justify-center text-emerald-400 text-xl border border-emerald-500/30">
+                        <i class="fa-solid fa-book-open"></i>
+                    </div>
+                </div>
+
+                <div class="glass-card p-5 rounded-2xl flex items-center justify-between">
+                    <div>
+                        <p class="text-xs font-semibold text-slate-400">عدد الدكاترة المسجلين</p>
+                        <h3 id="stat-total-teachers" class="text-2xl font-black text-white mt-1">0</h3>
+                    </div>
+                    <div class="w-12 h-12 bg-purple-500/20 rounded-xl flex items-center justify-center text-purple-400 text-xl border border-purple-500/30">
+                        <i class="fa-solid fa-user-doctor"></i>
+                    </div>
+                </div>
+
+                <div class="glass-card p-5 rounded-2xl flex items-center justify-between">
+                    <div>
+                        <p class="text-xs font-semibold text-slate-400">حالة الربط السحابي</p>
+                        <h3 class="text-sm font-bold text-emerald-400 mt-2 flex items-center gap-1.5">
+                            <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                            مربوط بـ Firebase
+                        </h3>
+                    </div>
+                    <div class="w-12 h-12 bg-amber-500/20 rounded-xl flex items-center justify-center text-amber-400 text-xl border border-amber-500/30">
+                        <i class="fa-solid fa-signal"></i>
+                    </div>
                 </div>
             </div>
 
-            <div class="glass-card p-5 rounded-2xl flex items-center justify-between">
-                <div>
-                    <p class="text-xs font-semibold text-slate-400">عدد الدكاترة المسجلين</p>
-                    <h3 id="stat-total-teachers" class="text-2xl font-black text-white mt-1">0</h3>
+            <!-- Navigation Tabs -->
+            <div class="flex border-b border-slate-800 space-x-6 space-x-reverse">
+                <button id="nav-btn-codes" onclick="switchSection('codes')" class="pb-3 text-sm font-bold border-b-2 border-indigo-500 text-indigo-400 transition flex items-center gap-2">
+                    <i class="fa-solid fa-key text-xs"></i>
+                    <span>إدارة أكواد ورموز الطلاب</span>
+                </button>
+                <button id="nav-btn-courses" onclick="switchSection('courses')" class="pb-3 text-sm font-semibold text-slate-400 hover:text-white transition flex items-center gap-2 border-b-2 border-transparent">
+                    <i class="fa-solid fa-layer-group text-xs"></i>
+                    <span>إدارة الكورسات والفيديوهات</span>
+                </button>
+                <button id="nav-btn-teachers" onclick="switchSection('teachers')" class="pb-3 text-sm font-semibold text-slate-400 hover:text-white transition flex items-center gap-2 border-b-2 border-transparent">
+                    <i class="fa-solid fa-user-doctor text-xs"></i>
+                    <span>حسابات وإذونات الدكاترة</span>
+                </button>
+            </div>
+
+            <!-- SECTION 1: CODES MANAGEMENT -->
+            <div id="section-codes" class="space-y-6">
+                <div class="glass-card p-6 rounded-2xl space-y-4">
+                    <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+                        <h2 class="text-base font-bold text-white flex items-center gap-2">
+                            <i class="fa-solid fa-plus-circle text-indigo-400"></i>
+                            <span>إنشاء/توليد كود دخول وتفعيل جديد</span>
+                        </h2>
+                        <button onclick="autoGenerateCode()" class="text-xs text-indigo-400 hover:text-indigo-300 font-bold transition flex items-center gap-1">
+                            <i class="fa-solid fa-wand-magic-sparkles"></i>
+                            <span>توليد كود عشوائي</span>
+                        </button>
+                    </div>
+
+                    <form onsubmit="handleCreateCode(event)" class="grid grid-cols-1 md:grid-cols-12 gap-4 items-end">
+                        <div class="md:col-span-4">
+                            <label class="block text-xs font-semibold text-slate-300 mb-1.5">رمز الكود (Code) *</label>
+                            <input type="text" id="new-code-val" required placeholder="مثال: EP-99201" dir="ltr" 
+                                class="w-full glass-input text-white text-left px-4 py-2.5 rounded-xl font-mono text-sm focus:outline-none">
+                        </div>
+
+                        <div class="md:col-span-4">
+                            <label class="block text-xs font-semibold text-slate-300 mb-1.5">اسم الطالب (اختياري)</label>
+                            <input type="text" id="new-code-student" placeholder="اسم الطالب المخصص له الكود" 
+                                class="w-full glass-input text-white px-4 py-2.5 rounded-xl text-sm focus:outline-none">
+                        </div>
+
+                        <div class="md:col-span-4">
+                            <label class="block text-xs font-semibold text-slate-300 mb-1.5">الكورس المرتبط *</label>
+                            <select id="new-code-course" required class="w-full glass-input text-white px-4 py-2.5 rounded-xl text-sm focus:outline-none bg-slate-900">
+                            </select>
+                        </div>
+
+                        <div class="md:col-span-12 flex justify-end pt-2">
+                            <button type="submit" class="bg-indigo-600 hover:bg-indigo-500 text-white px-6 py-2.5 rounded-xl text-xs font-bold transition flex items-center gap-2 shadow-lg shadow-indigo-600/30">
+                                <i class="fa-solid fa-check"></i>
+                                <span>حفظ وإضافة الكود للسحابة</span>
+                            </button>
+                        </div>
+                    </form>
                 </div>
-                <div class="w-12 h-12 bg-purple-500/20 rounded-xl flex items-center justify-center text-purple-400 text-xl border border-purple-500/30">
-                    <i class="fa-solid fa-user-doctor"></i>
+
+                <!-- Codes Table -->
+                <div class="glass-card rounded-2xl overflow-hidden">
+                    <div class="p-5 border-b border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                        <h3 class="text-sm font-bold text-white">قائمة الأكواد المضافة</h3>
+                        <div class="relative w-full sm:w-64">
+                            <i class="fa-solid fa-magnifying-glass absolute right-3 top-3 text-slate-500 text-xs"></i>
+                            <input type="text" id="search-codes" oninput="renderCodesUI()" placeholder="بحث باسم الطالب أو الكود..." 
+                                class="w-full glass-input text-white pr-9 pl-4 py-1.5 rounded-xl text-xs focus:outline-none">
+                        </div>
+                    </div>
+
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-right text-xs text-slate-300">
+                            <thead class="bg-slate-900/80 text-slate-400 uppercase font-bold border-b border-slate-800">
+                                <tr>
+                                    <th class="p-4">الكود</th>
+                                    <th class="p-4">اسم الطالب</th>
+                                    <th class="p-4">الكورس المرتبط</th>
+                                    <th class="p-4">الحالة</th>
+                                    <th class="p-4 text-center">الإجراءات</th>
+                                </tr>
+                            </thead>
+                            <tbody id="codes-table-body" class="divide-y divide-slate-800/60">
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
 
-            <div class="glass-card p-5 rounded-2xl flex items-center justify-between">
-                <div>
-                    <p class="text-xs font-semibold text-slate-400">حالة الربط السحابي</p>
-                    <h3 class="text-sm font-bold text-emerald-400 mt-2 flex items-center gap-1.5">
-                        <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                        مربوط بـ Firebase
+            <!-- SECTION 2: COURSES & VIDEOS MANAGEMENT -->
+            <div id="section-courses" class="space-y-6 hidden">
+                <!-- Create Course Form -->
+                <div class="glass-card p-6 rounded-2xl space-y-4">
+                    <div class="border-b border-slate-800 pb-3">
+                        <h2 class="text-base font-bold text-white flex items-center gap-2">
+                            <i class="fa-solid fa-circle-plus text-emerald-400"></i>
+                            <span>إضافة كورس تعليمي جديد وتخصيص الدكتور المسؤول</span>
+                        </h2>
+                    </div>
+
+                    <form onsubmit="handleCreateCourse(event)" class="grid grid-cols-1 md:grid-cols-12 gap-4">
+                        <div class="md:col-span-5">
+                            <label class="block text-xs font-semibold text-slate-300 mb-1.5">عنوان الدورة / الكورس *</label>
+                            <input type="text" id="course-title" required placeholder="مثال: أسس العناية المركزة" 
+                                class="w-full glass-input text-white px-4 py-2.5 rounded-xl text-sm focus:outline-none">
+                        </div>
+
+                        <div class="md:col-span-4">
+                            <label class="block text-xs font-semibold text-slate-300 mb-1.5">الدكتور المسؤول عن الكورس *</label>
+                            <select id="course-teacher-name" required class="w-full glass-input text-white px-4 py-2.5 rounded-xl text-sm focus:outline-none bg-slate-900">
+                                <option value="">جاري تحميل الدكاترة...</option>
+                            </select>
+                        </div>
+
+                        <div class="md:col-span-3">
+                            <label class="block text-xs font-semibold text-slate-300 mb-1.5">التصنيف *</label>
+                            <select id="course-category" class="w-full glass-input text-white px-4 py-2.5 rounded-xl text-sm focus:outline-none bg-slate-900">
+                                <option value="العلوم الطبية">العلوم الطبية</option>
+                                <option value="البرمجة">البرمجة والتطوير</option>
+                                <option value="التصميم">التصميم والوسائط</option>
+                                <option value="إدارة الأعمال">إدارة الأعمال</option>
+                            </select>
+                        </div>
+
+                        <div class="md:col-span-3">
+                            <label class="block text-xs font-semibold text-slate-300 mb-1.5">السعر</label>
+                            <input type="text" id="course-price" required placeholder="مجاناً أو 350 ج.م" 
+                                class="w-full glass-input text-white px-4 py-2.5 rounded-xl text-sm focus:outline-none">
+                        </div>
+
+                        <div class="md:col-span-3">
+                            <label class="block text-xs font-semibold text-slate-300 mb-1.5">حالة الكورس الابتدائية</label>
+                            <select id="course-locked" class="w-full glass-input text-white px-4 py-2.5 rounded-xl text-sm focus:outline-none bg-slate-900">
+                                <option value="false">مفتوح للطلاب</option>
+                                <option value="true">مغلق (يتطلب موافقة)</option>
+                            </select>
+                        </div>
+
+                        <div class="md:col-span-6">
+                            <label class="block text-xs font-semibold text-slate-300 mb-1.5">رابط صورة الغلاف (Image URL)</label>
+                            <input type="url" id="course-image" placeholder="https://images.unsplash.com/photo-..." 
+                                class="w-full glass-input text-white px-4 py-2.5 rounded-xl text-sm focus:outline-none" dir="ltr">
+                        </div>
+
+                        <div class="md:col-span-12 flex justify-end pt-2">
+                            <button type="submit" class="bg-emerald-600 hover:bg-emerald-500 text-white px-6 py-2.5 rounded-xl text-xs font-bold transition flex items-center gap-2 shadow-lg shadow-emerald-600/30">
+                                <i class="fa-solid fa-plus"></i>
+                                <span>نشر الكورس وتخصيصه للدكتور</span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Add Lesson Video Form -->
+                <div class="glass-card p-6 rounded-2xl space-y-4 border-l-4 border-indigo-500">
+                    <div class="border-b border-slate-800 pb-3">
+                        <h2 class="text-base font-bold text-white flex items-center gap-2">
+                            <i class="fa-solid fa-video text-indigo-400"></i>
+                            <span>إضافة درس فيديو شرح لكورس معني</span>
+                        </h2>
+                    </div>
+
+                    <form onsubmit="handleAddLesson(event)" class="grid grid-cols-1 md:grid-cols-12 gap-4">
+                        <div class="md:col-span-4">
+                            <label class="block text-xs font-semibold text-slate-300 mb-1.5">اختر الكورس المستهدف *</label>
+                            <select id="lesson-target-course" required class="w-full glass-input text-white px-4 py-2.5 rounded-xl text-sm focus:outline-none bg-slate-900">
+                            </select>
+                        </div>
+
+                        <div class="md:col-span-4">
+                            <label class="block text-xs font-semibold text-slate-300 mb-1.5">عنوان الدرس *</label>
+                            <input type="text" id="lesson-title" required placeholder="مثال: الدرس 1: مقدمة الحالات" 
+                                class="w-full glass-input text-white px-4 py-2.5 rounded-xl text-sm focus:outline-none">
+                        </div>
+
+                        <div class="md:col-span-4">
+                            <label class="block text-xs font-semibold text-slate-300 mb-1.5">رابط الفيديو (YouTube) *</label>
+                            <input type="url" id="lesson-video-url" required placeholder="https://www.youtube.com/embed/..." dir="ltr"
+                                class="w-full glass-input text-white px-4 py-2.5 rounded-xl text-sm focus:outline-none">
+                        </div>
+
+                        <div class="md:col-span-3">
+                            <label class="block text-xs font-semibold text-slate-300 mb-1.5">مدة الدرس</label>
+                            <input type="text" id="lesson-duration" placeholder="15:00" dir="ltr"
+                                class="w-full glass-input text-white px-4 py-2.5 rounded-xl text-sm focus:outline-none">
+                        </div>
+
+                        <div class="md:col-span-9">
+                            <label class="block text-xs font-semibold text-slate-300 mb-1.5">وصف الدرس</label>
+                            <input type="text" id="lesson-desc" placeholder="ملخص سريع للشرح..." 
+                                class="w-full glass-input text-white px-4 py-2.5 rounded-xl text-sm focus:outline-none">
+                        </div>
+
+                        <div class="md:col-span-12 flex justify-end pt-2">
+                            <button type="submit" class="bg-indigo-600 hover:bg-indigo-500 text-white px-6 py-2.5 rounded-xl text-xs font-bold transition flex items-center gap-2 shadow-lg">
+                                <i class="fa-solid fa-upload"></i>
+                                <span>إضافة فيديو الدرس</span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Courses List -->
+                <div class="space-y-4">
+                    <h3 class="text-sm font-bold text-white flex items-center gap-2">
+                        <i class="fa-solid fa-list-check text-slate-400"></i>
+                        <span>الكورسات المسجلة والدكاترة المخصصين لها</span>
                     </h3>
-                </div>
-                <div class="w-12 h-12 bg-amber-500/20 rounded-xl flex items-center justify-center text-amber-400 text-xl border border-amber-500/30">
-                    <i class="fa-solid fa-signal"></i>
+                    
+                    <div id="courses-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Navigation Tabs -->
-        <div class="flex border-b border-slate-800 space-x-6 space-x-reverse">
-            <button id="nav-btn-codes" onclick="switchSection('codes')" class="pb-3 text-sm font-bold border-b-2 border-indigo-500 text-indigo-400 transition flex items-center gap-2">
-                <i class="fa-solid fa-key text-xs"></i>
-                <span>إدارة أكواد ورموز الطلاب</span>
-            </button>
-            <button id="nav-btn-courses" onclick="switchSection('courses')" class="pb-3 text-sm font-semibold text-slate-400 hover:text-white transition flex items-center gap-2 border-b-2 border-transparent">
-                <i class="fa-solid fa-layer-group text-xs"></i>
-                <span>إدارة الكورسات والفيديوهات</span>
-            </button>
-            <button id="nav-btn-teachers" onclick="switchSection('teachers')" class="pb-3 text-sm font-semibold text-slate-400 hover:text-white transition flex items-center gap-2 border-b-2 border-transparent">
-                <i class="fa-solid fa-user-doctor text-xs"></i>
-                <span>حسابات وإذونات الدكاترة</span>
-            </button>
-        </div>
+            <!-- SECTION 3: TEACHERS MANAGEMENT -->
+            <div id="section-teachers" class="space-y-6 hidden">
+                <div class="glass-card p-6 rounded-2xl space-y-4">
+                    <div class="border-b border-slate-800 pb-3">
+                        <h2 class="text-base font-bold text-white flex items-center gap-2">
+                            <i class="fa-solid fa-user-plus text-emerald-400"></i>
+                            <span>إنشاء حساب وتحديد كلمة مرور لكل دكتور</span>
+                        </h2>
+                    </div>
 
-        <!-- SECTION 1: CODES MANAGEMENT -->
-        <div id="section-codes" class="space-y-6">
-            <div class="glass-card p-6 rounded-2xl space-y-4">
-                <div class="flex items-center justify-between border-b border-slate-800 pb-3">
-                    <h2 class="text-base font-bold text-white flex items-center gap-2">
-                        <i class="fa-solid fa-plus-circle text-indigo-400"></i>
-                        <span>إنشاء/توليد كود دخول وتفعيل جديد</span>
-                    </h2>
-                    <button onclick="autoGenerateCode()" class="text-xs text-indigo-400 hover:text-indigo-300 font-bold transition flex items-center gap-1">
-                        <i class="fa-solid fa-wand-magic-sparkles"></i>
-                        <span>توليد كود عشوائي</span>
-                    </button>
+                    <form onsubmit="handleCreateTeacher(event)" class="grid grid-cols-1 md:grid-cols-12 gap-4 items-end">
+                        <div class="md:col-span-5">
+                            <label class="block text-xs font-semibold text-slate-300 mb-1.5">اسم الدكتور / المحاضر *</label>
+                            <input type="text" id="teacher-name" required placeholder="مثال: د. محمد أحمد" 
+                                class="w-full glass-input text-white px-4 py-2.5 rounded-xl text-sm focus:outline-none">
+                        </div>
+
+                        <div class="md:col-span-4">
+                            <label class="block text-xs font-semibold text-slate-300 mb-1.5">كلمة المرور الحصرية له *</label>
+                            <input type="text" id="teacher-pass" required placeholder="مثال: doc#8890" dir="ltr"
+                                class="w-full glass-input text-white text-left px-4 py-2.5 rounded-xl font-mono text-sm focus:outline-none">
+                        </div>
+
+                        <div class="md:col-span-3">
+                            <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white px-6 py-2.5 rounded-xl text-xs font-bold transition shadow-lg shadow-emerald-600/30">
+                                إضافة الدكتور للسحابة
+                            </button>
+                        </div>
+                    </form>
                 </div>
 
-                <form onsubmit="handleCreateCode(event)" class="grid grid-cols-1 md:grid-cols-12 gap-4 items-end">
-                    <div class="md:col-span-4">
-                        <label class="block text-xs font-semibold text-slate-300 mb-1.5">رمز الكود (Code) *</label>
-                        <input type="text" id="new-code-val" required placeholder="مثال: EP-99201" dir="ltr" 
-                            class="w-full glass-input text-white text-left px-4 py-2.5 rounded-xl font-mono text-sm focus:outline-none">
+                <!-- Teachers List Table -->
+                <div class="glass-card rounded-2xl overflow-hidden">
+                    <div class="p-5 border-b border-slate-800">
+                        <h3 class="text-sm font-bold text-white">قائمة حسابات الدكاترة المعتمدين</h3>
                     </div>
 
-                    <div class="md:col-span-4">
-                        <label class="block text-xs font-semibold text-slate-300 mb-1.5">اسم الطالب (اختياري)</label>
-                        <input type="text" id="new-code-student" placeholder="اسم الطالب المخصص له الكود" 
-                            class="w-full glass-input text-white px-4 py-2.5 rounded-xl text-sm focus:outline-none">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-right text-xs text-slate-300">
+                            <thead class="bg-slate-900/80 text-slate-400 uppercase font-bold border-b border-slate-800">
+                                <tr>
+                                    <th class="p-4">اسم الدكتور</th>
+                                    <th class="p-4">كلمة المرور</th>
+                                    <th class="p-4 text-center">الإجراءات</th>
+                                </tr>
+                            </thead>
+                            <tbody id="teachers-table-body" class="divide-y divide-slate-800/60">
+                            </tbody>
+                        </table>
                     </div>
-
-                    <div class="md:col-span-4">
-                        <label class="block text-xs font-semibold text-slate-300 mb-1.5">الكورس المرتبط *</label>
-                        <select id="new-code-course" required class="w-full glass-input text-white px-4 py-2.5 rounded-xl text-sm focus:outline-none bg-slate-900">
-                        </select>
-                    </div>
-
-                    <div class="md:col-span-12 flex justify-end pt-2">
-                        <button type="submit" class="bg-indigo-600 hover:bg-indigo-500 text-white px-6 py-2.5 rounded-xl text-xs font-bold transition flex items-center gap-2 shadow-lg shadow-indigo-600/30">
-                            <i class="fa-solid fa-check"></i>
-                            <span>حفظ وإضافة الكود للسحابة</span>
-                        </button>
-                    </div>
-                </form>
-            </div>
-
-            <!-- Codes Table -->
-            <div class="glass-card rounded-2xl overflow-hidden">
-                <div class="p-5 border-b border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                    <h3 class="text-sm font-bold text-white">قائمة الأكواد المضافة</h3>
-                    <div class="relative w-full sm:w-64">
-                        <i class="fa-solid fa-magnifying-glass absolute right-3 top-3 text-slate-500 text-xs"></i>
-                        <input type="text" id="search-codes" oninput="renderCodesUI()" placeholder="بحث باسم الطالب أو الكود..." 
-                            class="w-full glass-input text-white pr-9 pl-4 py-1.5 rounded-xl text-xs focus:outline-none">
-                    </div>
-                </div>
-
-                <div class="overflow-x-auto">
-                    <table class="w-full text-right text-xs text-slate-300">
-                        <thead class="bg-slate-900/80 text-slate-400 uppercase font-bold border-b border-slate-800">
-                            <tr>
-                                <th class="p-4">الكود</th>
-                                <th class="p-4">اسم الطالب</th>
-                                <th class="p-4">الكورس المرتبط</th>
-                                <th class="p-4">الحالة</th>
-                                <th class="p-4 text-center">الإجراءات</th>
-                            </tr>
-                        </thead>
-                        <tbody id="codes-table-body" class="divide-y divide-slate-800/60">
-                        </tbody>
-                    </table>
                 </div>
             </div>
-        </div>
 
-        <!-- SECTION 2: COURSES & VIDEOS MANAGEMENT -->
-        <div id="section-courses" class="space-y-6 hidden">
-            <!-- Create Course Form -->
-            <div class="glass-card p-6 rounded-2xl space-y-4">
-                <div class="border-b border-slate-800 pb-3">
-                    <h2 class="text-base font-bold text-white flex items-center gap-2">
-                        <i class="fa-solid fa-circle-plus text-emerald-400"></i>
-                        <span>إضافة كورس تعليمي جديد وتخصيص الدكتور المسؤول</span>
-                    </h2>
-                </div>
-
-                <form onsubmit="handleCreateCourse(event)" class="grid grid-cols-1 md:grid-cols-12 gap-4">
-                    <div class="md:col-span-5">
-                        <label class="block text-xs font-semibold text-slate-300 mb-1.5">عنوان الدورة / الكورس *</label>
-                        <input type="text" id="course-title" required placeholder="مثال: أسس العناية المركزة" 
-                            class="w-full glass-input text-white px-4 py-2.5 rounded-xl text-sm focus:outline-none">
-                    </div>
-
-                    <div class="md:col-span-4">
-                        <label class="block text-xs font-semibold text-slate-300 mb-1.5">الدكتور المسؤول عن الكورس *</label>
-                        <select id="course-teacher-name" required class="w-full glass-input text-white px-4 py-2.5 rounded-xl text-sm focus:outline-none bg-slate-900">
-                            <option value="">جاري تحميل الدكاترة...</option>
-                        </select>
-                    </div>
-
-                    <div class="md:col-span-3">
-                        <label class="block text-xs font-semibold text-slate-300 mb-1.5">التصنيف *</label>
-                        <select id="course-category" class="w-full glass-input text-white px-4 py-2.5 rounded-xl text-sm focus:outline-none bg-slate-900">
-                            <option value="العلوم الطبية">العلوم الطبية</option>
-                            <option value="البرمجة">البرمجة والتطوير</option>
-                            <option value="التصميم">التصميم والوسائط</option>
-                            <option value="إدارة الأعمال">إدارة الأعمال</option>
-                        </select>
-                    </div>
-
-                    <div class="md:col-span-3">
-                        <label class="block text-xs font-semibold text-slate-300 mb-1.5">السعر</label>
-                        <input type="text" id="course-price" required placeholder="مجاناً أو 350 ج.م" 
-                            class="w-full glass-input text-white px-4 py-2.5 rounded-xl text-sm focus:outline-none">
-                    </div>
-
-                    <div class="md:col-span-3">
-                        <label class="block text-xs font-semibold text-slate-300 mb-1.5">حالة الكورس الابتدائية</label>
-                        <select id="course-locked" class="w-full glass-input text-white px-4 py-2.5 rounded-xl text-sm focus:outline-none bg-slate-900">
-                            <option value="false">مفتوح للطلاب</option>
-                            <option value="true">مغلق (يتطلب موافقة)</option>
-                        </select>
-                    </div>
-
-                    <div class="md:col-span-6">
-                        <label class="block text-xs font-semibold text-slate-300 mb-1.5">رابط صورة الغلاف (Image URL)</label>
-                        <input type="url" id="course-image" placeholder="https://images.unsplash.com/photo-..." 
-                            class="w-full glass-input text-white px-4 py-2.5 rounded-xl text-sm focus:outline-none" dir="ltr">
-                    </div>
-
-                    <div class="md:col-span-12 flex justify-end pt-2">
-                        <button type="submit" class="bg-emerald-600 hover:bg-emerald-500 text-white px-6 py-2.5 rounded-xl text-xs font-bold transition flex items-center gap-2 shadow-lg shadow-emerald-600/30">
-                            <i class="fa-solid fa-plus"></i>
-                            <span>نشر الكورس وتخصيصه للدكتور</span>
-                        </button>
-                    </div>
-                </form>
-            </div>
-
-            <!-- Add Lesson Video Form -->
-            <div class="glass-card p-6 rounded-2xl space-y-4 border-l-4 border-indigo-500">
-                <div class="border-b border-slate-800 pb-3">
-                    <h2 class="text-base font-bold text-white flex items-center gap-2">
-                        <i class="fa-solid fa-video text-indigo-400"></i>
-                        <span>إضافة درس فيديو شرح لكورس معني</span>
-                    </h2>
-                </div>
-
-                <form onsubmit="handleAddLesson(event)" class="grid grid-cols-1 md:grid-cols-12 gap-4">
-                    <div class="md:col-span-4">
-                        <label class="block text-xs font-semibold text-slate-300 mb-1.5">اختر الكورس المستهدف *</label>
-                        <select id="lesson-target-course" required class="w-full glass-input text-white px-4 py-2.5 rounded-xl text-sm focus:outline-none bg-slate-900">
-                        </select>
-                    </div>
-
-                    <div class="md:col-span-4">
-                        <label class="block text-xs font-semibold text-slate-300 mb-1.5">عنوان الدرس *</label>
-                        <input type="text" id="lesson-title" required placeholder="مثال: الدرس 1: مقدمة الحالات" 
-                            class="w-full glass-input text-white px-4 py-2.5 rounded-xl text-sm focus:outline-none">
-                    </div>
-
-                    <div class="md:col-span-4">
-                        <label class="block text-xs font-semibold text-slate-300 mb-1.5">رابط الفيديو (YouTube) *</label>
-                        <input type="url" id="lesson-video-url" required placeholder="https://www.youtube.com/embed/..." dir="ltr"
-                            class="w-full glass-input text-white px-4 py-2.5 rounded-xl text-sm focus:outline-none">
-                    </div>
-
-                    <div class="md:col-span-3">
-                        <label class="block text-xs font-semibold text-slate-300 mb-1.5">مدة الدرس</label>
-                        <input type="text" id="lesson-duration" placeholder="15:00" dir="ltr"
-                            class="w-full glass-input text-white px-4 py-2.5 rounded-xl text-sm focus:outline-none">
-                    </div>
-
-                    <div class="md:col-span-9">
-                        <label class="block text-xs font-semibold text-slate-300 mb-1.5">وصف الدرس</label>
-                        <input type="text" id="lesson-desc" placeholder="ملخص سريع للشرح..." 
-                            class="w-full glass-input text-white px-4 py-2.5 rounded-xl text-sm focus:outline-none">
-                    </div>
-
-                    <div class="md:col-span-12 flex justify-end pt-2">
-                        <button type="submit" class="bg-indigo-600 hover:bg-indigo-500 text-white px-6 py-2.5 rounded-xl text-xs font-bold transition flex items-center gap-2 shadow-lg">
-                            <i class="fa-solid fa-upload"></i>
-                            <span>إضافة فيديو الدرس</span>
-                        </button>
-                    </div>
-                </form>
-            </div>
-
-            <!-- Courses List -->
-            <div class="space-y-4">
-                <h3 class="text-sm font-bold text-white flex items-center gap-2">
-                    <i class="fa-solid fa-list-check text-slate-400"></i>
-                    <span>الكورسات المسجلة والدكاترة المخصصين لها</span>
-                </h3>
-                
-                <div id="courses-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-                </div>
-            </div>
-        </div>
-
-        <!-- SECTION 3: TEACHERS MANAGEMENT -->
-        <div id="section-teachers" class="space-y-6 hidden">
-            <div class="glass-card p-6 rounded-2xl space-y-4">
-                <div class="border-b border-slate-800 pb-3">
-                    <h2 class="text-base font-bold text-white flex items-center gap-2">
-                        <i class="fa-solid fa-user-plus text-emerald-400"></i>
-                        <span>إنشاء حساب وتحديد كلمة مرور لكل دكتور</span>
-                    </h2>
-                </div>
-
-                <form onsubmit="handleCreateTeacher(event)" class="grid grid-cols-1 md:grid-cols-12 gap-4 items-end">
-                    <div class="md:col-span-5">
-                        <label class="block text-xs font-semibold text-slate-300 mb-1.5">اسم الدكتور / المحاضر *</label>
-                        <input type="text" id="teacher-name" required placeholder="مثال: د. محمد أحمد" 
-                            class="w-full glass-input text-white px-4 py-2.5 rounded-xl text-sm focus:outline-none">
-                    </div>
-
-                    <div class="md:col-span-4">
-                        <label class="block text-xs font-semibold text-slate-300 mb-1.5">كلمة المرور الحصرية له *</label>
-                        <input type="text" id="teacher-pass" required placeholder="مثال: doc#8890" dir="ltr"
-                            class="w-full glass-input text-white text-left px-4 py-2.5 rounded-xl font-mono text-sm focus:outline-none">
-                    </div>
-
-                    <div class="md:col-span-3">
-                        <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white px-6 py-2.5 rounded-xl text-xs font-bold transition shadow-lg shadow-emerald-600/30">
-                            إضافة الدكتور للسحابة
-                        </button>
-                    </div>
-                </form>
-            </div>
-
-            <!-- Teachers List Table -->
-            <div class="glass-card rounded-2xl overflow-hidden">
-                <div class="p-5 border-b border-slate-800">
-                    <h3 class="text-sm font-bold text-white">قائمة حسابات الدكاترة المعتمدين</h3>
-                </div>
-
-                <div class="overflow-x-auto">
-                    <table class="w-full text-right text-xs text-slate-300">
-                        <thead class="bg-slate-900/80 text-slate-400 uppercase font-bold border-b border-slate-800">
-                            <tr>
-                                <th class="p-4">اسم الدكتور</th>
-                                <th class="p-4">كلمة المرور</th>
-                                <th class="p-4 text-center">الإجراءات</th>
-                            </tr>
-                        </thead>
-                        <tbody id="teachers-table-body" class="divide-y divide-slate-800/60">
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-
-    </main>
+        </main>
+    </div>
 
     <!-- Firebase Connection Script -->
     <script type="module">
@@ -443,15 +480,40 @@
         };
 
         window.onload = function() {
-            window.loadCloudData();
+            if (sessionStorage.getItem('ep_admin_auth') === 'true') {
+                document.getElementById('admin-login-overlay').classList.add('hidden');
+                document.getElementById('admin-main-content').classList.remove('hidden');
+                window.loadCloudData();
+            }
         };
     </script>
 
     <!-- UI Interaction Script -->
     <script>
+        const ADMIN_PASS = "ADMIN2026"; // كلمة مرور الأدمن الافتراضية
         window.globalCodes = [];
         window.globalCourses = [];
         window.globalTeachers = [];
+
+        function handleAdminLogin(e) {
+            e.preventDefault();
+            const pass = document.getElementById('admin-password').value.trim();
+
+            if (pass === ADMIN_PASS) {
+                sessionStorage.setItem('ep_admin_auth', 'true');
+                document.getElementById('admin-login-overlay').classList.add('hidden');
+                document.getElementById('admin-main-content').classList.remove('hidden');
+                showToast('مرحباً بعودتك', 'تم تسجيل الدخول إلى لوحة المدير.', 'success');
+                if (window.loadCloudData) window.loadCloudData();
+            } else {
+                showToast('خطأ في كلمة المرور', 'كلمة المرور غير صحيحة، يرجى المحاولة مجدداً.', 'error');
+            }
+        }
+
+        function logoutAdmin() {
+            sessionStorage.removeItem('ep_admin_auth');
+            location.reload();
+        }
 
         function showToast(title, message, type = 'success') {
             const toast = document.getElementById('toast');
@@ -660,7 +722,7 @@
                 await window.addDoc(window.collection(window.db, "courses"), {
                     title: title,
                     instructor: teacherName,
-                    teacherName: teacherName, // ربط سحابي باسم الدكتور
+                    teacherName: teacherName,
                     category: category,
                     price: price,
                     locked: isLocked,
