@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>بوابة المحاضرين والدكاترة | منصة EduPulse</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts: Cairo -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: { 50: '#eef2ff', 100: '#e0e7ff', 500: '#6366f1', 600: '#4f46e5', 700: '#4338ca', 900: '#312e81' },
+                        emerald: { 500: '#10b981', 600: '#059669' }
+                    },
+                    fontFamily: { sans: ['Cairo', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Cairo', sans-serif; background-color: #0f172a; }
+        .glass-card { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.08); }
+        .glass-input { background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(255, 255, 255, 0.12); transition: all 0.3s ease; }
+        .glass-input:focus { background: rgba(15, 23, 42, 0.85); border-color: #10b981; box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.2); }
+    </style>
+</head>
+<body class="min-h-screen text-slate-100 flex flex-col relative overflow-x-hidden">
+
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed top-5 left-1/2 -translate-x-1/2 z-50 flex items-center gap-3 px-6 py-4 rounded-2xl shadow-2xl transition-all duration-500 opacity-0 transform -translate-y-10 pointer-events-none border">
+        <div id="toast-icon" class="w-8 h-8 rounded-full flex items-center justify-center text-white shrink-0"></div>
+        <div>
+            <h4 id="toast-title" class="font-bold text-sm text-white"></h4>
+            <p id="toast-msg" class="text-xs text-slate-200 mt-0.5"></p>
+        </div>
+    </div>
+
+    <!-- 1. AUTH LOGIN OVERLAY FOR TEACHERS -->
+    <div id="login-overlay" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/90 backdrop-blur-md">
+        <div class="glass-card max-w-md w-full p-8 rounded-3xl space-y-6 border border-emerald-500/30 text-center shadow-2xl">
+            <div class="w-16 h-16 bg-gradient-to-tr from-emerald-500 to-indigo-600 rounded-2xl flex items-center justify-center text-white font-black text-3xl mx-auto shadow-lg shadow-emerald-500/20">
+                <i class="fa-solid fa-user-lock"></i>
+            </div>
+            <div>
+                <h2 class="text-xl font-extrabold text-white">بوابة المحاضرين والدكاترة</h2>
+                <p class="text-xs text-slate-400 mt-1">أدخل كلمة المرور الخاصة بك لعرض وإدارة كورساتك فقط</p>
+            </div>
+
+            <form onsubmit="handleTeacherLogin(event)" class="space-y-4 text-right">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1.5">كلمة المرور الحصرية *</label>
+                    <input type="password" id="teacher-password" required placeholder="أدخل كلمة المرور الخاصة بك" dir="ltr"
+                        class="w-full glass-input text-white text-center py-3 px-4 rounded-xl text-sm font-mono focus:outline-none">
+                </div>
+
+                <button type="submit" id="btn-login" class="w-full py-3.5 bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-500 hover:to-emerald-600 text-white font-bold rounded-xl shadow-lg shadow-emerald-600/30 transition text-xs flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-key"></i>
+                    <span>تأكيد تسجيل الدخول</span>
+                </button>
+            </form>
+
+            <div class="pt-4 border-t border-slate-800 text-center">
+                <a href="dashboard.html" class="text-indigo-400 text-xs hover:underline">العودة للمنصة الرئيسية</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. MAIN TEACHER DASHBOARD CONTENT (HIDDEN UNTIL AUTH) -->
+    <div id="teacher-main-content" class="hidden flex-1 flex flex-col">
+        <!-- Navigation Header -->
+        <header class="relative z-20 border-b border-slate-800 bg-slate-900/80 backdrop-blur-md sticky top-0 px-4 sm:px-8 py-4 flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                <div class="w-10 h-10 bg-gradient-to-tr from-emerald-500 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg text-white font-black text-xl">
+                    <i class="fa-solid fa-user-doctor"></i>
+                </div>
+                <div>
+                    <div class="flex items-center gap-2">
+                        <h1 class="text-lg font-black tracking-wide text-white">EduPulse</h1>
+                        <span id="doc-welcome-badge" class="px-2.5 py-0.5 bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 rounded-md text-[10px] font-bold">بوابة المحاضرين</span>
+                    </div>
+                    <p class="text-xs text-slate-400">لوحة التحكم الخاصة بكورساتك المخصصة فقط</p>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-3">
+                <button onclick="logoutTeacher()" class="flex items-center gap-2 bg-rose-500/20 hover:bg-rose-500/30 text-rose-400 border border-rose-500/30 px-3.5 py-2 rounded-xl text-xs font-bold transition">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                    <span>قفل الجلسة</span>
+                </button>
+                <a href="admin.html" class="flex items-center gap-2 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 px-4 py-2 rounded-xl text-xs font-bold transition">
+                    <i class="fa-solid fa-user-shield text-amber-400"></i>
+                    <span>لوحة الأدمن</span>
+                </a>
+                <a href="dashboard.html" class="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded-xl text-xs font-bold transition shadow-lg">
+                    <i class="fa-solid fa-globe"></i>
+                    <span>عرض المنصة</span>
+                </a>
+            </div>
+        </header>
+
+        <!-- Main Section -->
+        <main class="relative z-10 flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8 space-y-8">
+            
+            <!-- Welcome Hero Banner -->
+            <div class="glass-card p-6 sm:p-8 rounded-3xl bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 border border-indigo-500/20 flex flex-col md:flex-row items-center justify-between gap-6">
+                <div class="space-y-2 text-center md:text-right">
+                    <span class="px-3 py-1 bg-emerald-500/20 text-emerald-400 rounded-full text-xs font-bold border border-emerald-500/30">
+                        👨‍🏫 لوحة المحاضر الخاصة
+                    </span>
+                    <h2 class="text-2xl font-extrabold text-white">مرحباً بك <span id="doc-welcome-name" class="text-emerald-400">دكتور</span></h2>
+                    <p class="text-xs sm:text-sm text-slate-300">يمكنك إضافة فيديوهات الشرح وحصص المراجعة لكورساتك المعتمدة مباشرة في السحابة.</p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                
+                <!-- Add Lesson Form -->
+                <div class="lg:col-span-7 glass-card p-6 rounded-2xl space-y-5 border-t-4 border-emerald-500">
+                    <div class="border-b border-slate-800 pb-3 flex items-center justify-between">
+                        <h3 class="text-base font-bold text-white flex items-center gap-2">
+                            <i class="fa-solid fa-cloud-arrow-up text-emerald-400"></i>
+                            <span>نشر حصة جديدة لكورساتك</span>
+                        </h3>
+                        <span class="text-[10px] text-slate-400 bg-slate-800 px-2.5 py-1 rounded-lg">Firebase Synced</span>
+                    </div>
+
+                    <form onsubmit="handlePublishLesson(event)" class="space-y-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-300 mb-1.5">اختر الكورس المستهدف *</label>
+                            <select id="select-course" required class="w-full glass-input text-white px-4 py-2.5 rounded-xl text-sm focus:outline-none bg-slate-900">
+                                <option value="">جاري جلب كورساتك الخاصة...</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-300 mb-1.5">عنوان المحاضرة / الحصة *</label>
+                            <input type="text" id="lesson-title" required placeholder="مثال: المحاضرة 1: الشرح والإคลينيكي" 
+                                class="w-full glass-input text-white px-4 py-2.5 rounded-xl text-sm focus:outline-none">
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-300 mb-1.5">مدة الحصة (دقيقة) *</label>
+                                <input type="text" id="lesson-duration" required placeholder="45:00" dir="ltr" 
+                                    class="w-full glass-input text-white px-4 py-2.5 rounded-xl text-sm focus:outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-300 mb-1.5">رابط الفيديو (YouTube Embed / Direct) *</label>
+                                <input type="url" id="lesson-video-url" required placeholder="https://www.youtube.com/embed/..." dir="ltr" 
+                                    class="w-full glass-input text-white px-4 py-2.5 rounded-xl text-sm focus:outline-none">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-300 mb-1.5">ملخص أو تفاصيل الحصة (اختياري)</label>
+                            <textarea id="lesson-desc" rows="3" placeholder="نبذة عما تم تغطيته في هذا الفيديو..." 
+                                class="w-full glass-input text-white px-4 py-2.5 rounded-xl text-sm focus:outline-none"></textarea>
+                        </div>
+
+                        <div class="pt-2 flex justify-end">
+                            <button type="submit" id="btn-submit" class="w-full sm:w-auto bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-500 hover:to-emerald-600 text-white px-8 py-3 rounded-xl text-xs font-bold transition shadow-lg shadow-emerald-600/30 flex items-center justify-center gap-2">
+                                <i class="fa-solid fa-paper-plane"></i>
+                                <span>نشر الحصة للطلاب فوراً</span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Teacher's Only Courses List -->
+                <div class="lg:col-span-5 glass-card p-6 rounded-2xl space-y-4">
+                    <div class="border-b border-slate-800 pb-3 flex items-center justify-between">
+                        <h3 class="text-base font-bold text-white flex items-center gap-2">
+                            <i class="fa-solid fa-book-bookmark text-indigo-400"></i>
+                            <span>كورساتي المخصصة لي وحصصها</span>
+                        </h3>
+                        <button onclick="loadMyCoursesData()" class="text-xs text-indigo-400 hover:underline">
+                            <i class="fa-solid fa-rotate"></i>
+                        </button>
+                    </div>
+
+                    <div id="courses-list-container" class="space-y-3 max-h-[460px] overflow-y-auto pr-1">
+                        <div class="text-center py-8 text-slate-500 text-xs">جاري تحميل بيانات كورسك الخاص...</div>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- Firebase SDK Modules -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getFirestore, collection, getDocs, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBE4VrKYlT3mBWNpWNTBgjaNlGulcv-Mww",
+            authDomain: "edupulse-4d175.firebaseapp.com",
+            projectId: "edupulse-4d175",
+            storageBucket: "edupulse-4d175.firebasestorage.app",
+            messagingSenderId: "514388810310",
+            appId: "1:514388810310:web:d4cd7f5b01ad398d2a8847"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        window.db = db;
+        window.collection = collection;
+        window.getDocs = getDocs;
+        window.doc = doc;
+        window.updateDoc = updateDoc;
+
+        window.loadMyCoursesData = async function() {
+            let savedDoc = JSON.parse(sessionStorage.getItem('ep_logged_doctor'));
+            if (!savedDoc) return;
+
+            try {
+                const querySnapshot = await window.getDocs(window.collection(window.db, "courses"));
+                window.myCourses = [];
+                
+                querySnapshot.forEach((docSnap) => {
+                    let c = docSnap.data();
+                    // تصفية فلترة الكورسات لتعرض فقط ما طابق اسم الدكتور الحالي
+                    if (c.teacherName === savedDoc.name || c.instructor === savedDoc.name) {
+                        window.myCourses.push({ id: docSnap.id, ...c });
+                    }
+                });
+
+                populateCourseSelect();
+                renderTeacherCourses();
+            } catch (err) {
+                console.error("Firebase Error:", err);
+                showToast('خطأ', 'تعذر جلب الكورسات من السحابة.', 'error');
+            }
+        };
+
+        window.onload = function() {
+            let savedDoc = sessionStorage.getItem('ep_logged_doctor');
+            if (savedDoc) {
+                let docData = JSON.parse(savedDoc);
+                document.getElementById('login-overlay').classList.add('hidden');
+                document.getElementById('teacher-main-content').classList.remove('hidden');
+                document.getElementById('doc-welcome-name').innerText = docData.name;
+                window.loadMyCoursesData();
+            }
+        };
+    </script>
+
+    <!-- Page Functional Logic -->
+    <script>
+        window.myCourses = [];
+
+        function showToast(title, message, type = 'success') {
+            const toast = document.getElementById('toast');
+            const toastIcon = document.getElementById('toast-icon');
+            document.getElementById('toast-title').innerText = title;
+            document.getElementById('toast-msg').innerText = message;
+
+            if (type === 'success') {
+                toast.className = 'fixed top-5 left-1/2 -translate-x-1/2 z-50 flex items-center gap-3 px-6 py-4 rounded-2xl shadow-2xl transition-all duration-500 bg-slate-900/95 border-emerald-500/50 text-white backdrop-blur-lg translate-y-0 opacity-100';
+                toastIcon.className = 'w-8 h-8 rounded-full bg-emerald-500 flex items-center justify-center text-white shrink-0';
+                toastIcon.innerHTML = '<i class="fa-solid fa-check"></i>';
+            } else {
+                toast.className = 'fixed top-5 left-1/2 -translate-x-1/2 z-50 flex items-center gap-3 px-6 py-4 rounded-2xl shadow-2xl transition-all duration-500 bg-slate-900/95 border-rose-500/50 text-white backdrop-blur-lg translate-y-0 opacity-100';
+                toastIcon.className = 'w-8 h-8 rounded-full bg-rose-500 flex items-center justify-center text-white shrink-0';
+                toastIcon.innerHTML = '<i class="fa-solid fa-exclamation"></i>';
+            }
+
+            setTimeout(() => {
+                toast.classList.add('-translate-y-10', 'opacity-0');
+                toast.classList.remove('translate-y-0', 'opacity-100');
+            }, 3500);
+        }
+
+        async function handleTeacherLogin(e) {
+            e.preventDefault();
+            const btn = document.getElementById('btn-login');
+            const passInput = document.getElementById('teacher-password').value.trim();
+
+            btn.disabled = true;
+            btn.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i> <span>جاري التحقق...</span>`;
+
+            try {
+                const querySnapshot = await window.getDocs(window.collection(window.db, "teachers"));
+                let matchedTeacher = null;
+
+                querySnapshot.forEach(d => {
+                    let data = d.data();
+                    if(data.password === passInput) {
+                        matchedTeacher = data;
+                    }
+                });
+
+                if(matchedTeacher) {
+                    sessionStorage.setItem('ep_logged_doctor', JSON.stringify(matchedTeacher));
+                    document.getElementById('login-overlay').classList.add('hidden');
+                    document.getElementById('teacher-main-content').classList.remove('hidden');
+                    document.getElementById('doc-welcome-name').innerText = matchedTeacher.name;
+                    showToast('تم الدخول بنجاح', `مرحباً بك دكتور ${matchedTeacher.name}.`, 'success');
+                    window.loadMyCoursesData();
+                } else {
+                    showToast('خطأ في كلمة المرور', 'كلمة المرور المدخلة غير مسجلة باللوحة.', 'error');
+                }
+            } catch(err) {
+                showToast('خطأ', 'تعذر الاتصال بالسحابة.', 'error');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = `<i class="fa-solid fa-key"></i> <span>تأكيد تسجيل الدخول</span>`;
+            }
+        }
+
+        function logoutTeacher() {
+            sessionStorage.removeItem('ep_logged_doctor');
+            location.reload();
+        }
+
+        function populateCourseSelect() {
+            const select = document.getElementById('select-course');
+            if (window.myCourses.length === 0) {
+                select.innerHTML = `<option value="">لا توجد كورسات مخصصة لك حالياً من الأدمن</option>`;
+                return;
+            }
+
+            select.innerHTML = `<option value="">اختر من كورساتك المتاحة...</option>` + 
+                window.myCourses.map(c => `<option value="${c.id}">${c.title}</option>`).join('');
+        }
+
+        function renderTeacherCourses() {
+            const container = document.getElementById('courses-list-container');
+            if (window.myCourses.length === 0) {
+                container.innerHTML = `<div class="text-center py-6 text-slate-500 text-xs">لم يتم ربط أي كورس باسمك من لوحة الأدمن بعد.</div>`;
+                return;
+            }
+
+            container.innerHTML = window.myCourses.map(c => {
+                const lessonsCount = c.lessons ? c.lessons.length : 0;
+                return `
+                    <div class="p-3.5 bg-slate-800/60 rounded-xl border border-slate-700/50 space-y-2">
+                        <div class="flex items-center justify-between">
+                            <h4 class="font-bold text-xs text-white line-clamp-1">${c.title}</h4>
+                            <span class="px-2 py-0.5 bg-emerald-500/20 text-emerald-400 text-[10px] font-bold rounded-md">
+                                ${lessonsCount} حصص
+                            </span>
+                        </div>
+                        <p class="text-[11px] text-slate-400"><i class="fa-solid fa-folder-open ml-1 text-indigo-400"></i>التصنيف: ${c.category || 'عام'}</p>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        async function handlePublishLesson(e) {
+            e.preventDefault();
+            const btn = document.getElementById('btn-submit');
+            const courseId = document.getElementById('select-course').value;
+            const title = document.getElementById('lesson-title').value.trim();
+            const duration = document.getElementById('lesson-duration').value.trim();
+            let videoUrl = document.getElementById('lesson-video-url').value.trim();
+            const desc = document.getElementById('lesson-desc').value.trim();
+
+            if (!courseId) {
+                showToast('تنبيه', 'يرجى اختيار كورس من قائمتك أولاً.', 'error');
+                return;
+            }
+
+            if (videoUrl.includes('watch?v=')) {
+                videoUrl = videoUrl.replace('watch?v=', 'embed/');
+            }
+
+            btn.disabled = true;
+            btn.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i> <span>جاري الحفظ بالسحابة...</span>`;
+
+            try {
+                let targetCourse = window.myCourses.find(c => c.id === courseId);
+                let currentLessons = targetCourse.lessons || [];
+
+                currentLessons.push({
+                    id: 'l_' + Date.now(),
+                    title: title,
+                    duration: duration,
+                    videoUrl: videoUrl,
+                    desc: desc || 'حصة شرح مخصصة'
+                });
+
+                await window.updateDoc(window.doc(window.db, "courses", courseId), {
+                    lessons: currentLessons
+                });
+
+                showToast('تم نشر الحصة بنجاح!', `تمت إضافة حصة "${title}" في كورس "${targetCourse.title}".`, 'success');
+                e.target.reset();
+                window.loadMyCoursesData();
+            } catch (err) {
+                console.error(err);
+                showToast('خطأ', 'حدث خطأ أثناء إضافة الحصة بالسحابة.', 'error');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = `<i class="fa-solid fa-paper-plane"></i> <span>نشر الحصة للطلاب فوراً</span>`;
+            }
+        }
+    </script>
+</body>
+</html>
