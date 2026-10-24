@@ -8,6 +8,217 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Cairo', sans-serif; background-color: #0f172a; }
+        .glass-card { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.08); }
+        .glass-input { background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(255, 255, 255, 0.12); }
+    </style>
+</head>
+<body class="min-h-screen text-slate-100 flex flex-col relative overflow-x-hidden">
+
+    <!-- LOGIN OVERLAY -->
+    <div id="login-overlay" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/90 backdrop-blur-md">
+        <div class="glass-card max-w-md w-full p-8 rounded-3xl space-y-6 border border-emerald-500/30 text-center shadow-2xl">
+            <h2 class="text-xl font-extrabold text-white">بوابة المحاضرين والدكاترة</h2>
+            <form onsubmit="handleTeacherLogin(event)" class="space-y-4">
+                <input type="password" id="teacher-password" required placeholder="كلمة المرور" dir="ltr" class="w-full glass-input text-white text-center py-3 rounded-xl text-sm font-mono">
+                <button type="submit" id="btn-login" class="w-full py-3.5 bg-emerald-600 text-white font-bold rounded-xl text-xs">تسجيل الدخول</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- MAIN TEACHER CONTENT -->
+    <div id="teacher-main-content" class="hidden flex-1 flex flex-col">
+        <header class="border-b border-slate-800 bg-slate-900/80 p-4 flex items-center justify-between">
+            <h1 class="text-lg font-black text-white">EduPulse <span id="doc-welcome-name" class="text-emerald-400"></span></h1>
+            <button onclick="logoutTeacher()" class="bg-rose-500/20 text-rose-400 px-3.5 py-2 rounded-xl text-xs font-bold">قفل الجلسة</button>
+        </header>
+
+        <main class="flex-1 max-w-7xl w-full mx-auto p-6 space-y-8">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                <div class="lg:col-span-7 glass-card p-6 rounded-2xl space-y-5 border-t-4 border-emerald-500">
+                    <h3 class="text-base font-bold text-white">نشر حصة جديدة لكورساتك</h3>
+                    <form onsubmit="handlePublishLesson(event)" class="space-y-4">
+                        <select id="select-course" required class="w-full glass-input text-white p-3 rounded-xl text-sm bg-slate-900"></select>
+                        <input type="text" id="lesson-title" required placeholder="عنوان المحاضرة" class="w-full glass-input text-white p-3 rounded-xl text-sm">
+                        <input type="text" id="lesson-duration" required placeholder="مدة الحصة (45:00)" dir="ltr" class="w-full glass-input text-white p-3 rounded-xl text-sm">
+                        <input type="url" id="lesson-video-url" required placeholder="رابط الفيديو (YouTube Embed)" dir="ltr" class="w-full glass-input text-white p-3 rounded-xl text-sm">
+                        <button type="submit" class="w-full bg-emerald-600 text-white py-3 rounded-xl text-xs font-bold">نشر الحصة للطلاب فوراً</button>
+                    </form>
+                </div>
+
+                <div class="lg:col-span-5 glass-card p-6 rounded-2xl space-y-4">
+                    <h3 class="text-base font-bold text-white">كورساتي المتاحة لي</h3>
+                    <div id="courses-list-container" class="space-y-3 max-h-[400px] overflow-y-auto"></div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- FLOATING CHAT FOR TEACHERS -->
+    <div id="chatWidget" class="fixed bottom-5 left-5 z-50 flex flex-col items-end">
+        <div id="chatWindow" class="hidden w-80 sm:w-96 h-[460px] bg-slate-900 border border-slate-700 rounded-3xl shadow-2xl flex flex-col overflow-hidden mb-3 text-slate-100">
+            <div class="p-4 bg-slate-800 border-b border-slate-700 flex items-center justify-between">
+                <h4 class="font-bold text-xs text-emerald-400">شات الدكاترة والطلاب المباشر</h4>
+                <button onclick="toggleChat()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-sm"></i></button>
+            </div>
+            <div id="chatMessages" class="flex-1 p-4 overflow-y-auto space-y-3 text-xs"></div>
+            <form onsubmit="sendChatMessage(event)" class="p-3 bg-slate-800/50 border-t border-slate-700 flex items-center gap-2">
+                <input type="text" id="chatInput" placeholder="اكتب ردك للطلاب..." required class="flex-1 bg-slate-950 border border-slate-700 text-white text-xs p-2.5 rounded-xl">
+                <button type="submit" class="w-9 h-9 bg-emerald-600 text-white rounded-xl flex items-center justify-center"><i class="fa-solid fa-paper-plane text-xs"></i></button>
+            </form>
+        </div>
+        <button onclick="toggleChat()" class="p-3.5 bg-emerald-600 text-white rounded-2xl shadow-xl flex items-center gap-2">
+            <i class="fa-solid fa-comments text-xl"></i>
+            <span class="text-xs font-bold">شات المنصة</span>
+        </button>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getFirestore, collection, addDoc, getDocs, onSnapshot, query, orderBy, limit, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBE4VrKYlT3mBWNpWNTBgjaNlGulcv-Mww",
+            authDomain: "edupulse-4d175.firebaseapp.com",
+            projectId: "edupulse-4d175",
+            storageBucket: "edupulse-4d175.firebasestorage.app",
+            messagingSenderId: "514388810310",
+            appId: "1:514388810310:web:d4cd7f5b01ad398d2a8847"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        window.db = db;
+        window.collection = collection;
+        window.addDoc = addDoc;
+        window.getDocs = getDocs;
+        window.doc = doc;
+        window.updateDoc = updateDoc;
+
+        window.listenToLiveChat = function() {
+            const q = query(collection(db, "community_chat"), orderBy("timestamp", "asc"), limit(50));
+            onSnapshot(q, (snapshot) => {
+                const messagesBox = document.getElementById('chatMessages');
+                let docData = JSON.parse(sessionStorage.getItem('ep_logged_doctor')) || { name: 'دكتور' };
+
+                messagesBox.innerHTML = snapshot.docs.map(docSnap => {
+                    let data = docSnap.data();
+                    let isMe = data.senderName === docData.name;
+                    let isDoctor = data.role === 'دكتور';
+
+                    return `
+                        <div class="flex flex-col ${isMe ? 'items-end' : 'items-start'}">
+                            <span class="text-[10px] text-slate-400 font-bold mb-0.5">${isDoctor ? '👨‍🏫 ' : ''}${data.senderName} (${data.role})</span>
+                            <div class="px-3 py-2 rounded-2xl max-w-[85%] ${isMe ? 'bg-emerald-600 text-white' : 'bg-slate-800 text-slate-200'}">
+                                ${data.message}
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+                messagesBox.scrollTop = messagesBox.scrollHeight;
+            });
+        };
+
+        window.loadMyCoursesData = async function() {
+            let savedDoc = JSON.parse(sessionStorage.getItem('ep_logged_doctor'));
+            if (!savedDoc) return;
+
+            const querySnapshot = await getDocs(collection(db, "courses"));
+            window.myCourses = [];
+            let allowed = savedDoc.allowedCourses || [];
+
+            querySnapshot.forEach((docSnap) => {
+                if (allowed.includes(docSnap.id)) window.myCourses.push({ id: docSnap.id, ...docSnap.data() });
+            });
+
+            document.getElementById('select-course').innerHTML = window.myCourses.map(c => `<option value="${c.id}">${c.title}</option>`).join('');
+            document.getElementById('courses-list-container').innerHTML = window.myCourses.map(c => `<div class="p-3 bg-slate-800 rounded-xl text-xs font-bold">${c.title}</div>`).join('');
+            window.listenToLiveChat();
+        };
+
+        window.onload = function() {
+            let savedDoc = sessionStorage.getItem('ep_logged_doctor');
+            if (savedDoc) {
+                let docData = JSON.parse(savedDoc);
+                document.getElementById('login-overlay').classList.add('hidden');
+                document.getElementById('teacher-main-content').classList.remove('hidden');
+                document.getElementById('doc-welcome-name').innerText = docData.name;
+                window.loadMyCoursesData();
+            }
+        };
+    </script>
+
+    <script>
+        function toggleChat() { document.getElementById('chatWindow').classList.toggle('hidden'); }
+
+        async function sendChatMessage(e) {
+            e.preventDefault();
+            const input = document.getElementById('chatInput');
+            const msg = input.value.trim();
+            if (!msg) return;
+
+            let docData = JSON.parse(sessionStorage.getItem('ep_logged_doctor')) || { name: 'دكتور' };
+
+            await window.addDoc(window.collection(window.db, "community_chat"), {
+                senderName: docData.name,
+                role: 'دكتور',
+                message: msg,
+                timestamp: new Date()
+            });
+            input.value = '';
+        }
+
+        async function handleTeacherLogin(e) {
+            e.preventDefault();
+            const pass = document.getElementById('teacher-password').value.trim();
+            const querySnapshot = await window.getDocs(window.collection(window.db, "teachers"));
+            let matched = null;
+            querySnapshot.forEach(d => { if(d.data().password === pass) matched = d.data(); });
+
+            if(matched) {
+                sessionStorage.setItem('ep_logged_doctor', JSON.stringify(matched));
+                location.reload();
+            } else {
+                alert('كلمة المرور غير صحيحة.');
+            }
+        }
+
+        function logoutTeacher() { sessionStorage.removeItem('ep_logged_doctor'); location.reload(); }
+
+        async function handlePublishLesson(e) {
+            e.preventDefault();
+            const courseId = document.getElementById('select-course').value;
+            const title = document.getElementById('lesson-title').value.trim();
+            const duration = document.getElementById('lesson-duration').value.trim();
+            let videoUrl = document.getElementById('lesson-video-url').value.trim();
+
+            if (videoUrl.includes('watch?v=')) videoUrl = videoUrl.replace('watch?v=', 'embed/');
+
+            let target = window.myCourses.find(c => c.id === courseId);
+            let current = target.lessons || [];
+            current.push({ id: 'l_' + Date.now(), title, duration, videoUrl });
+
+            await window.updateDoc(window.doc(window.db, "courses", courseId), { lessons: current });
+            alert('تم نشر الحصة بنجاح!');
+            e.target.reset();
+            window.loadMyCoursesData();
+        }
+    </script>
+</body>
+</html><!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>بوابة المحاضرين والدكاترة | منصة EduPulse</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Google Fonts: Cairo -->
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
     <script>
