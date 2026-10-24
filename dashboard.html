@@ -39,33 +39,14 @@
     </script>
 
     <style>
-        body {
-            font-family: 'Cairo', sans-serif;
-            background-color: #f8fafc;
-        }
-        ::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #f1f5f9;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #cbd5e1;
-            border-radius: 4px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #94a3b8;
-        }
-        .line-clamp-2 {
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-        }
+        body { font-family: 'Cairo', sans-serif; background-color: #f8fafc; }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #f1f5f9; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        .line-clamp-2 { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
     </style>
 </head>
-<body class="text-slate-800 bg-slate-50 min-h-screen flex flex-col antialiased">
+<body class="text-slate-800 bg-slate-50 min-h-screen flex flex-col antialiased relative">
 
     <!-- Top Navigation Header -->
     <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200 shadow-sm">
@@ -137,15 +118,13 @@
 
     <!-- Main Container Content Sections -->
     <main class="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8">
-
-        <!-- ================= 1. EXPLORE / CATALOG SECTION ================= -->
+        <!-- 1. EXPLORE SECTION -->
         <section id="view-explore" class="space-y-6">
             <div class="relative overflow-hidden rounded-3xl bg-gradient-to-r from-brand-900 via-brand-700 to-indigo-800 text-white p-6 sm:p-10 shadow-xl">
-                <div class="absolute -right-10 -bottom-10 w-64 h-64 bg-white/10 rounded-full blur-2xl"></div>
                 <div class="relative z-10 max-w-2xl space-y-3">
                     <span class="inline-block bg-white/10 backdrop-blur-md text-emerald-400 font-semibold text-xs px-3 py-1 rounded-full border border-white/10">✨ التعلم بلا حدود</span>
                     <h1 class="text-2xl sm:text-4xl font-extrabold leading-tight">مرحباً بك في منصة EduPulse التعليمية</h1>
-                    <p class="text-slate-200 text-sm sm:text-base leading-relaxed">استعرض الدورات المعتمدة، تابع الدروس المرفوعة، وواصل تقدمك الأكاديمي بناءً على صلاحيات كودك الشخصي.</p>
+                    <p class="text-slate-200 text-sm sm:text-base leading-relaxed">تواصل مع زملائك والدكاترة مباشرة عبر الشات الحي، وتابع دروسك المتاحة.</p>
                 </div>
             </div>
 
@@ -162,7 +141,7 @@
             <div id="courseCatalogGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
         </section>
 
-        <!-- ================= 2. INTERACTIVE COURSE PLAYER SECTION ================= -->
+        <!-- 2. PLAYER SECTION -->
         <section id="view-player" class="hidden space-y-6">
             <div class="flex items-center justify-between bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
                 <button onclick="switchTab('explore')" class="flex items-center gap-2 text-slate-600 hover:text-brand-600 font-bold text-sm transition-colors">
@@ -173,13 +152,6 @@
                     <h3 id="playerCourseTitle" class="font-extrabold text-base text-slate-800">عنوان الدورة</h3>
                     <p id="playerCourseInstructor" class="text-xs text-slate-500">المدرب</p>
                 </div>
-                <div class="hidden sm:flex items-center gap-3">
-                    <div class="text-left">
-                        <span class="text-xs font-semibold text-slate-500 block">نسبة الإنجاز</span>
-                        <span id="playerOverallPercent" class="text-sm font-bold text-brand-600">0%</span>
-                    </div>
-                    <div class="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center border-2 border-brand-500 font-bold text-xs text-brand-700" id="playerPercentCircle">0%</div>
-                </div>
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -189,53 +161,85 @@
                             <iframe id="videoIframe" class="w-full h-full hidden" src="" frameborder="0" allowfullscreen></iframe>
                             <div id="noVideoMsg" class="text-center p-6 space-y-2">
                                 <i class="fa-solid fa-video-slash text-4xl text-slate-500"></i>
-                                <p class="text-sm text-slate-300">يرجى اختيار درس من القائمة للبدء في المشاهدة</p>
+                                <p class="text-sm text-slate-300">اختر درس للبدء في المشاهدة</p>
                             </div>
                         </div>
-                    </div>
-
-                    <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm space-y-3">
-                        <h4 id="activeLessonTitle" class="font-bold text-slate-800 text-sm">اسم الدرس</h4>
-                        <p id="playerLessonDesc" class="text-xs text-slate-600 leading-relaxed">وصف تفصيلي للدرس والمحتوى التعليمي الخاص به.</p>
                     </div>
                 </div>
 
                 <div class="bg-white rounded-2xl border border-slate-200 p-4 shadow-sm flex flex-col h-[500px]">
                     <div class="border-b border-slate-100 pb-3 mb-3">
-                        <h4 class="font-bold text-slate-800 text-sm">فيديوهات ودروس الدورة</h4>
-                        <p class="text-xs text-slate-400" id="curriculumProgressText">0 دروس</p>
+                        <h4 class="font-bold text-slate-800 text-sm">دروس الكورس</h4>
                     </div>
                     <div class="flex-1 overflow-y-auto space-y-3 pr-1" id="curriculumList"></div>
                 </div>
             </div>
         </section>
 
-        <!-- ================= 3. MY LEARNING SECTION ================= -->
+        <!-- 3. MY LEARNING SECTION -->
         <section id="view-learning" class="hidden space-y-6">
-            <div class="border-b border-slate-200 pb-4">
-                <h2 class="text-2xl font-extrabold text-slate-900">دوراتي المسجلة والمفتوحة (My Learning)</h2>
-                <p class="text-slate-500 text-xs mt-1">الدورات المصرح لك بفتحها عبر كود التفعيل الخاص بك من لوحة الأدمن.</p>
-            </div>
+            <h2 class="text-2xl font-extrabold text-slate-900">دوراتي المسجلة والمفتوحة</h2>
             <div id="enrolledCoursesGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
         </section>
 
-        <!-- ================= 4. DASHBOARD SECTION ================= -->
+        <!-- 4. DASHBOARD SECTION -->
         <section id="view-dashboard" class="hidden space-y-6">
-            <div class="border-b border-slate-200 pb-4">
-                <h2 class="text-2xl font-extrabold text-slate-900">لوحة الإحصائيات 📊</h2>
-                <p class="text-slate-500 text-xs mt-1">متابعة نشاط حسابك الأكاديمي وصلاحياتك.</p>
-            </div>
-            <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
-                <h3 class="font-bold text-slate-800 text-sm">حالة الاشتراك النشط والكود</h3>
-                <p id="dashboardStatusText" class="text-xs text-slate-600">جاري التحقق من الصلاحيات السحابية...</p>
+            <h2 class="text-2xl font-extrabold text-slate-900">لوحة الإحصائيات 📊</h2>
+            <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                <p id="dashboardStatusText" class="text-xs text-slate-600">جاري تحميل بيانات الحساب...</p>
             </div>
         </section>
     </main>
 
+    <!-- ================= FLOATING CHAT WIDGET ================= -->
+    <div id="chatWidget" class="fixed bottom-5 left-5 z-50 flex flex-col items-end">
+        
+        <!-- Chat Window -->
+        <div id="chatWindow" class="hidden w-80 sm:w-96 h-[460px] bg-slate-900 border border-slate-700/80 rounded-3xl shadow-2xl flex flex-col overflow-hidden mb-3 text-slate-100 backdrop-blur-xl">
+            <!-- Chat Header -->
+            <div class="p-4 bg-slate-800/90 border-b border-slate-700 flex items-center justify-between">
+                <div class="flex items-center gap-2.5">
+                    <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-brand-600 to-indigo-500 flex items-center justify-center text-white text-sm shadow">
+                        <i class="fa-solid fa-comments"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-xs text-white">الشات الجماعي للمنصة</h4>
+                        <span class="text-[10px] text-emerald-400 flex items-center gap-1">
+                            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> طلاب ودكاترة مباشر
+                        </span>
+                    </div>
+                </div>
+                <button onclick="toggleChat()" class="text-slate-400 hover:text-white p-1">
+                    <i class="fa-solid fa-xmark text-sm"></i>
+                </button>
+            </div>
+
+            <!-- Messages Area -->
+            <div id="chatMessages" class="flex-1 p-4 overflow-y-auto space-y-3 text-xs">
+                <div class="text-center py-8 text-slate-500">جاري تحميل المحادثات المباشرة...</div>
+            </div>
+
+            <!-- Chat Input -->
+            <form onsubmit="sendChatMessage(event)" class="p-3 bg-slate-800/50 border-t border-slate-700/80 flex items-center gap-2">
+                <input type="text" id="chatInput" placeholder="اكتب رسالتك للجميع..." required
+                    class="flex-1 bg-slate-950/80 border border-slate-700 text-white text-xs py-2.5 px-3 rounded-xl focus:outline-none focus:border-brand-500">
+                <button type="submit" class="w-9 h-9 bg-brand-600 hover:bg-brand-500 text-white rounded-xl flex items-center justify-center shrink-0 transition shadow">
+                    <i class="fa-solid fa-paper-plane text-xs"></i>
+                </button>
+            </form>
+        </div>
+
+        <!-- Floating Chat Button -->
+        <button onclick="toggleChat()" class="w-13 h-13 p-3.5 bg-gradient-to-tr from-brand-600 to-indigo-600 text-white rounded-2xl shadow-xl hover:scale-105 transition duration-300 flex items-center justify-center gap-2">
+            <i class="fa-solid fa-comments text-xl"></i>
+            <span class="text-xs font-bold hidden sm:inline">الشات الحي</span>
+        </button>
+    </div>
+
     <!-- Firebase Connection Script -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, getDocs, onSnapshot, query, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyBE4VrKYlT3mBWNpWNTBgjaNlGulcv-Mww",
@@ -252,27 +256,60 @@
         window.db = db;
         window.getDocs = getDocs;
         window.collection = collection;
+        window.addDoc = addDoc;
+
+        // الاستماع الفوري لشات المنصة (Live Realtime Listen)
+        window.listenToLiveChat = function() {
+            const q = query(collection(db, "community_chat"), orderBy("timestamp", "asc"), limit(50));
+            onSnapshot(q, (snapshot) => {
+                const messagesBox = document.getElementById('chatMessages');
+                if (snapshot.empty) {
+                    messagesBox.innerHTML = `<p class="text-center text-slate-500 py-6">لا توجد رسائل بعد. كن أول من يتحدث!</p>`;
+                    return;
+                }
+
+                let loggedUser = JSON.parse(localStorage.getItem('ep_logged_user')) || { name: 'طالب' };
+
+                messagesBox.innerHTML = snapshot.docs.map(docSnap => {
+                    let data = docSnap.data();
+                    let isMe = data.senderName === loggedUser.name;
+                    let isDoctor = data.role === 'دكتور';
+
+                    return `
+                        <div class="flex flex-col ${isMe ? 'items-end' : 'items-start'}">
+                            <div class="flex items-center gap-1.5 mb-1 text-[10px]">
+                                <span class="font-bold ${isDoctor ? 'text-emerald-400' : 'text-slate-300'}">
+                                    ${isDoctor ? '👨‍🏫 ' : ''}${data.senderName}
+                                </span>
+                                <span class="text-slate-500">${data.role || 'طالب'}</span>
+                            </div>
+                            <div class="px-3.5 py-2 rounded-2xl max-w-[85%] ${
+                                isMe ? 'bg-brand-600 text-white rounded-br-none' : 
+                                isDoctor ? 'bg-emerald-950 border border-emerald-500/40 text-emerald-100 rounded-bl-none' : 
+                                'bg-slate-800 text-slate-200 rounded-bl-none'
+                            }">
+                                ${data.message}
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+
+                messagesBox.scrollTop = messagesBox.scrollHeight;
+            });
+        };
 
         window.loadCloudData = async function() {
             try {
-                // 1. جلب الكورسات
-                const coursesSnap = await window.getDocs(window.collection(window.db, "courses"));
+                const coursesSnap = await getDocs(collection(db, "courses"));
                 window.courses = [];
-                coursesSnap.forEach((docSnap) => {
-                    window.courses.push({ id: docSnap.id, ...docSnap.data() });
-                });
+                coursesSnap.forEach((docSnap) => window.courses.push({ id: docSnap.id, ...docSnap.data() }));
 
-                // 2. جلب الأكواد والصلاحيات المحددة لكل طالب من الأدمن
-                const codesSnap = await window.getDocs(window.collection(window.db, "codes"));
+                const codesSnap = await getDocs(collection(db, "codes"));
                 window.cloudCodes = [];
-                codesSnap.forEach((docSnap) => {
-                    window.cloudCodes.push({ id: docSnap.id, ...docSnap.data() });
-                });
+                codesSnap.forEach((docSnap) => window.cloudCodes.push({ id: docSnap.id, ...docSnap.data() }));
 
-                // مطابقة الطالب الحالي بكوده أو اسمه المسجل في النظام
                 let loggedUser = JSON.parse(localStorage.getItem('ep_logged_user'));
                 if (loggedUser) {
-                    // البحث في الأكواد السحابية بناءً على الكود أو اسم الطالب
                     window.currentStudentPermission = window.cloudCodes.find(c => 
                         (loggedUser.code && c.code && c.code.toLowerCase() === loggedUser.code.toLowerCase()) ||
                         (loggedUser.name && c.student && c.student.toLowerCase() === loggedUser.name.toLowerCase())
@@ -281,28 +318,25 @@
 
                 renderCategoryChips();
                 renderCatalog();
-                updateBadgeCount();
+                window.listenToLiveChat();
             } catch (err) {
                 console.error("Cloud fetch error:", err);
             }
         };
 
         window.onload = function() {
-            renderCategoryChips();
             window.loadCloudData();
         };
     </script>
 
-    <!-- Core App Script -->
+    <!-- Core App Logic -->
     <script>
         let loggedUser = JSON.parse(localStorage.getItem('ep_logged_user'));
         if (!loggedUser) {
             window.location.href = 'index.html';
         } else {
             document.getElementById('studentDisplayName').innerText = loggedUser.name || 'طالب المنصة';
-            if(loggedUser.code) {
-                document.getElementById('studentActiveCode').innerText = `الكود: ${loggedUser.code}`;
-            }
+            if(loggedUser.code) document.getElementById('studentActiveCode').innerText = `الكود: ${loggedUser.code}`;
         }
 
         function logoutStudent() {
@@ -317,38 +351,50 @@
         let categories = ['الكل', 'العلوم الطبية', 'البرمجة', 'التصميم', 'إدارة الأعمال'];
         let selectedCategory = 'الكل';
         let searchQuery = '';
-        let currentPlayingCourse = null;
-        let activeLessonIndex = 0;
+
+        function toggleChat() {
+            const win = document.getElementById('chatWindow');
+            win.classList.toggle('hidden');
+        }
+
+        async function sendChatMessage(e) {
+            e.preventDefault();
+            const input = document.getElementById('chatInput');
+            const msg = input.value.trim();
+            if (!msg) return;
+
+            let loggedUser = JSON.parse(localStorage.getItem('ep_logged_user')) || { name: 'طالب' };
+
+            try {
+                await window.addDoc(window.collection(window.db, "community_chat"), {
+                    senderName: loggedUser.name,
+                    role: 'طالب',
+                    message: msg,
+                    timestamp: new Date()
+                });
+                input.value = '';
+            } catch (err) {
+                alert('حدث خطأ في إرسال الرسالة.');
+            }
+        }
 
         function switchTab(tabName) {
             ['explore', 'player', 'learning', 'dashboard'].forEach(view => {
                 const el = document.getElementById(`view-${view}`);
                 if(el) el.classList.add('hidden');
             });
-            
-            document.querySelectorAll('.nav-tab').forEach(btn => {
-                btn.classList.remove('active', 'border-brand-600', 'text-brand-600', 'font-semibold');
-                btn.classList.add('border-transparent', 'text-slate-600');
-            });
 
             const targetView = document.getElementById(`view-${tabName}`);
             if(targetView) targetView.classList.remove('hidden');
 
-            const activeBtn = document.getElementById(`tab-${tabName}`);
-            if(activeBtn) {
-                activeBtn.classList.add('active', 'border-brand-600', 'text-brand-600', 'font-semibold');
-                activeBtn.classList.remove('border-transparent', 'text-slate-600');
-            }
-
             if(tabName === 'learning') renderEnrolledCourses();
-            if(tabName === 'dashboard') renderDashboardStats();
         }
 
         function renderCategoryChips() {
             const container = document.getElementById('categoryChips');
             if(!container) return;
             container.innerHTML = categories.map(cat => `
-                <button onclick="filterCategory('${cat}')" class="px-4 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition-all ${selectedCategory === cat ? 'bg-brand-600 text-white shadow-md shadow-brand-500/20' : 'bg-white border border-slate-200 text-slate-600 hover:bg-slate-100'}">
+                <button onclick="filterCategory('${cat}')" class="px-4 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition-all ${selectedCategory === cat ? 'bg-brand-600 text-white shadow-md' : 'bg-white border border-slate-200 text-slate-600'}">
                     ${cat}
                 </button>
             `).join('');
@@ -365,15 +411,9 @@
             renderCatalog();
         }
 
-        // دالة لفحص هل الكورس مفتوح لهذا الطالب بناءً على صلاحيات الأدمن السحابية
         function isCourseUnlockedForStudent(course) {
-            if (!window.currentStudentPermission) {
-                // إذا لم يتم إيجاد كود مخصص، نعتمد على حالة الكورس العامة
-                return !course.locked;
-            }
-
+            if (!window.currentStudentPermission) return !course.locked;
             let allowed = window.currentStudentPermission.allowedCourses || [];
-            // التحقق إذا كان معرف الكورس أو عنوان الكورس موجوداً ضمن القائمة المسموحة للطالب
             return allowed.includes(course.id) || allowed.includes(course.title);
         }
 
@@ -383,138 +423,36 @@
 
             const filtered = window.courses.filter(c => {
                 const matchesCat = selectedCategory === 'الكل' || c.category === selectedCategory;
-                const matchesSearch = (c.title && c.title.toLowerCase().includes(searchQuery)) || 
-                                      (c.instructor && c.instructor.toLowerCase().includes(searchQuery));
+                const matchesSearch = (c.title && c.title.toLowerCase().includes(searchQuery));
                 return matchesCat && matchesSearch;
             });
 
             document.getElementById('coursesCount').innerText = filtered.length;
 
             if(filtered.length === 0) {
-                grid.innerHTML = `
-                    <div class="col-span-full text-center py-12 bg-white rounded-2xl border border-slate-200">
-                        <i class="fa-solid fa-magnifying-glass text-4xl text-slate-300 mb-3"></i>
-                        <p class="font-bold text-slate-700">لا توجد كورسات متاحة حالياً!</p>
-                    </div>
-                `;
+                grid.innerHTML = `<div class="col-span-full text-center py-12 bg-white rounded-2xl border border-slate-200 font-bold text-slate-700">لا توجد كورسات متاحة حالياً!</div>`;
                 return;
             }
 
             grid.innerHTML = filtered.map(course => {
                 const unlocked = isCourseUnlockedForStudent(course);
                 return `
-                    <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-md transition-all flex flex-col group">
-                        <div class="relative h-44 overflow-hidden">
-                            <img src="${course.image || 'https://images.unsplash.com/photo-1516549655169-df83a0774514'}" alt="${course.title}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
-                            <span class="absolute top-3 right-3 bg-slate-900/80 backdrop-blur-md text-white text-[10px] font-bold px-2.5 py-1 rounded-lg">
-                                ${course.category || 'عام'}
-                            </span>
+                    <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-md transition-all flex flex-col">
+                        <div class="relative h-44">
+                            <img src="${course.image || 'https://images.unsplash.com/photo-1516549655169-df83a0774514'}" class="w-full h-full object-cover">
                             <span class="absolute bottom-3 left-3 px-2.5 py-1 rounded-md text-xs font-bold text-white ${unlocked ? 'bg-emerald-500' : 'bg-rose-500'}">
-                                ${unlocked ? 'مفتوح لك ✓' : 'مغلق (غير مسموح)'}
+                                ${unlocked ? 'مفتوح لك ✓' : 'مغلق'}
                             </span>
                         </div>
-
-                        <div class="p-5 flex-1 flex flex-col justify-between space-y-4">
-                            <div class="space-y-2">
-                                <h3 class="font-bold text-slate-800 text-sm leading-snug line-clamp-2">${course.title}</h3>
-                                <p class="text-xs text-slate-500 line-clamp-2">${course.description || 'كورس تعليمي عبر المنصة'}</p>
-                            </div>
-
-                            <div class="border-t border-slate-100 pt-3 flex items-center justify-between">
-                                <span class="text-xs font-semibold text-slate-600"><i class="fa-solid fa-user-tie text-indigo-500 ml-1"></i>${course.instructor || course.teacherName || 'مدرب المنصة'}</span>
-                                
-                                ${unlocked ? `
-                                    <button onclick="openCoursePlayer('${course.id}')" class="bg-brand-600 hover:bg-brand-700 text-white text-xs font-bold px-3 py-2 rounded-xl transition-all">
-                                        مشاهدة الدروس
-                                    </button>
-                                ` : `
-                                    <button disabled class="bg-slate-200 text-slate-500 text-xs font-bold px-3 py-2 rounded-xl cursor-not-allowed">
-                                        <i class="fa-solid fa-lock ml-1"></i>مغلق
-                                    </button>
-                                `}
-                            </div>
+                        <div class="p-5 space-y-4">
+                            <h3 class="font-bold text-slate-800 text-sm line-clamp-2">${course.title}</h3>
+                            <button onclick="openCoursePlayer('${course.id}')" ${!unlocked ? 'disabled' : ''} class="w-full ${unlocked ? 'bg-brand-600 text-white' : 'bg-slate-200 text-slate-500'} text-xs font-bold py-2.5 rounded-xl">
+                                ${unlocked ? 'مشاهدة الدروس' : 'مغلق'}
+                            </button>
                         </div>
                     </div>
                 `;
             }).join('');
-        }
-
-        function updateBadgeCount() {
-            const unlockedCourses = window.courses.filter(c => isCourseUnlockedForStudent(c));
-            const badge = document.getElementById('enrolledBadge');
-            if(badge) badge.innerText = unlockedCourses.length;
-        }
-
-        function openCoursePlayer(courseId) {
-            currentPlayingCourse = window.courses.find(c => c.id === courseId);
-            if(!currentPlayingCourse) return;
-
-            // حماية إضافية قبل فتح اللاعب
-            if(!isCourseUnlockedForStudent(currentPlayingCourse)) {
-                alert('عذراً، هذا الكورس غير مخصص أو غير مفتوح لصلاحيات كودك الحالي.');
-                return;
-            }
-
-            activeLessonIndex = 0;
-            document.getElementById('playerCourseTitle').innerText = currentPlayingCourse.title;
-            document.getElementById('playerCourseInstructor').innerText = `المدرب: ${currentPlayingCourse.instructor || currentPlayingCourse.teacherName || 'المنصة'}`;
-
-            renderCurriculum();
-            loadActiveLesson();
-            switchTab('player');
-        }
-
-        function renderCurriculum() {
-            if(!currentPlayingCourse) return;
-
-            const list = document.getElementById('curriculumList');
-            const lessons = currentPlayingCourse.lessons || [];
-            document.getElementById('curriculumProgressText').innerText = `${lessons.length} دروس متاحة`;
-            document.getElementById('playerOverallPercent').innerText = `${lessons.length > 0 ? 100 : 0}%`;
-            document.getElementById('playerPercentCircle').innerText = `${lessons.length > 0 ? 100 : 0}%`;
-
-            if(lessons.length === 0) {
-                list.innerHTML = `<p class="text-xs text-slate-400 text-center py-6">لا توجد فيديوهات مرفوعة لهذا الكورس بعد.</p>`;
-                return;
-            }
-
-            list.innerHTML = lessons.map((lesson, idx) => `
-                <div onclick="selectLesson(${idx})" class="p-3 rounded-xl border transition-all cursor-pointer flex items-center justify-between ${idx === activeLessonIndex ? 'bg-brand-50 border-brand-300' : 'bg-slate-50 hover:bg-slate-100 border-slate-200'}">
-                    <div class="flex items-center gap-3">
-                        <div class="w-7 h-7 rounded-full bg-brand-100 text-brand-700 flex items-center justify-center font-bold text-xs">${idx + 1}</div>
-                        <div>
-                            <p class="text-xs font-bold ${idx === activeLessonIndex ? 'text-brand-700' : 'text-slate-800'}">${lesson.title}</p>
-                            <span class="text-[10px] text-slate-400"><i class="fa-regular fa-clock ml-1"></i>${lesson.duration || '15:00'}</span>
-                        </div>
-                    </div>
-                    <i class="fa-solid fa-play text-brand-600 text-xs"></i>
-                </div>
-            `).join('');
-        }
-
-        function selectLesson(idx) {
-            activeLessonIndex = idx;
-            renderCurriculum();
-            loadActiveLesson();
-        }
-
-        function loadActiveLesson() {
-            const lessons = currentPlayingCourse.lessons || [];
-            const lesson = lessons[activeLessonIndex];
-            const iframe = document.getElementById('videoIframe');
-            const noVideoMsg = document.getElementById('noVideoMsg');
-
-            if(lesson && lesson.videoUrl) {
-                iframe.src = lesson.videoUrl;
-                iframe.classList.remove('hidden');
-                noVideoMsg.classList.add('hidden');
-                document.getElementById('activeLessonTitle').innerText = lesson.title;
-                document.getElementById('playerLessonDesc').innerText = lesson.desc || 'شرح تفصيلي للدرس والمحتوى التعليمي.';
-            } else {
-                iframe.src = '';
-                iframe.classList.add('hidden');
-                noVideoMsg.classList.remove('hidden');
-            }
         }
 
         function renderEnrolledCourses() {
@@ -522,45 +460,18 @@
             const unlockedCourses = window.courses.filter(c => isCourseUnlockedForStudent(c));
 
             if(unlockedCourses.length === 0) {
-                grid.innerHTML = `<div class="col-span-full text-center py-12 bg-white rounded-2xl border border-slate-200"><p class="text-xs text-slate-500">لا توجد كورسات مفتوحة لحسابك حالياً. راجع إدارة المنصة لتفعيل كودك.</p></div>`;
+                grid.innerHTML = `<div class="col-span-full text-center py-12 bg-white rounded-2xl border border-slate-200 text-xs text-slate-500">لا توجد كورسات مفتوحة لك.</div>`;
                 return;
             }
 
             grid.innerHTML = unlockedCourses.map(c => `
-                <div class="bg-white rounded-2xl border border-slate-200 p-5 space-y-4 shadow-sm hover:shadow-md transition-all">
-                    <div class="flex items-center gap-3">
-                        <img src="${c.image || 'https://images.unsplash.com/photo-1516549655169-df83a0774514'}" class="w-16 h-16 rounded-xl object-cover">
-                        <div>
-                            <span class="text-[10px] bg-brand-50 text-brand-600 px-2 py-0.5 rounded-full font-bold">${c.category || 'عام'}</span>
-                            <h4 class="font-bold text-slate-800 text-sm line-clamp-1 mt-1">${c.title}</h4>
-                            <p class="text-xs text-slate-400">${c.instructor || c.teacherName || 'مدرب المنصة'}</p>
-                        </div>
-                    </div>
-                    <button onclick="openCoursePlayer('${c.id}')" class="w-full bg-brand-600 hover:bg-brand-700 text-white text-xs font-bold py-2.5 rounded-xl transition-all">
-                        متابعة التعلم ومشاهدة الفيديوهات
+                <div class="bg-white rounded-2xl border border-slate-200 p-5 space-y-4 shadow-sm">
+                    <h4 class="font-bold text-slate-800 text-sm">${c.title}</h4>
+                    <button onclick="openCoursePlayer('${c.id}')" class="w-full bg-brand-600 text-white text-xs font-bold py-2.5 rounded-xl">
+                        متابعة الدروس
                     </button>
                 </div>
             `).join('');
-        }
-
-        function renderDashboardStats() {
-            const statusBox = document.getElementById('dashboardStatusText');
-            if(!statusBox) return;
-
-            if(window.currentStudentPermission) {
-                statusBox.innerHTML = `
-                    <div class="space-y-2">
-                        <p class="text-emerald-600 font-bold">الحالة: كود التفعيل مفعل ومرتبط سحابياً ✓</p>
-                        <p>اسم الطالب: <strong>${window.currentStudentPermission.student || loggedUser.name}</strong></p>
-                        <p>الكود المستخدم: <code class="bg-slate-100 px-2 py-0.5 rounded text-brand-600 font-mono">${window.currentStudentPermission.code}</code></p>
-                        <p>عدد الكورسات المفتوحة لصلاحياتك: <strong class="text-indigo-600">${window.currentStudentPermission.allowedCourses ? window.currentStudentPermission.allowedCourses.length : 0} كورس</strong></p>
-                    </div>
-                `;
-            } else {
-                statusBox.innerHTML = `
-                    <p class="text-amber-600 font-bold">تنبيه: لم يتم العثور على صلاحيات مخصصة لهذا الكود في لوحة الأدمن، يتم عرض الكورسات المتاحة عامةً فقط.</p>
-                `;
-            }
         }
     </script>
 </body>
