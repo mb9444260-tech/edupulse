@@ -76,8 +76,6 @@
 
                 <!-- Right Actions & User Badge -->
                 <div class="flex items-center gap-3">
-                    <div class="h-6 w-px bg-slate-200 hidden sm:block"></div>
-
                     <!-- User Profile Avatar & Logout -->
                     <div class="flex items-center gap-2 cursor-pointer p-1 rounded-xl hover:bg-slate-100 transition-colors" onclick="logoutStudent()" title="تسجيل الخروج">
                         <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=150" alt="الطالب" class="w-9 h-9 rounded-xl object-cover border border-slate-200">
@@ -172,6 +170,15 @@
                     <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm space-y-3">
                         <h4 id="activeLessonTitle" class="font-bold text-slate-800 text-sm">اسم الدرس</h4>
                         <p id="playerLessonDesc" class="text-xs text-slate-600 leading-relaxed">وصف تفصيلي للدرس والمحتوى التعليمي الخاص به.</p>
+                        
+                        <!-- NEW: Attached PDF/PPT File Download Box -->
+                        <div id="lessonFileContainer" class="hidden pt-3 border-t border-slate-100">
+                            <a id="lessonFileLink" href="" target="_blank" class="inline-flex items-center gap-2 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 px-4 py-2.5 rounded-xl text-xs font-bold transition">
+                                <i class="fa-solid fa-file-pdf text-rose-500 text-sm"></i>
+                                <span>تحميل/عرض ملف المحاضرة (PDF / Presentation)</span>
+                                <i class="fa-solid fa-download text-xs mr-1"></i>
+                            </a>
+                        </div>
                     </div>
                 </div>
 
@@ -468,7 +475,6 @@
             if(badge) badge.innerText = unlockedCourses.length;
         }
 
-        // --- دالة تشغيل الكورس ومشاهدة الدروس الأساسية ---
         function openCoursePlayer(courseId) {
             currentPlayingCourse = window.courses.find(c => c.id === courseId || c.title === courseId);
             if(!currentPlayingCourse) {
@@ -529,25 +535,36 @@
             const iframe = document.getElementById('videoIframe');
             const noVideoMsg = document.getElementById('noVideoMsg');
 
-            if(lesson && lesson.videoUrl) {
-                let embedUrl = lesson.videoUrl;
-                if (embedUrl.includes('watch?v=')) {
-                    embedUrl = embedUrl.replace('watch?v=', 'embed/');
+            const fileContainer = document.getElementById('lessonFileContainer');
+            const fileLink = document.getElementById('lessonFileLink');
+
+            if(lesson) {
+                if(lesson.videoUrl) {
+                    let embedUrl = lesson.videoUrl;
+                    if (embedUrl.includes('watch?v=')) {
+                        embedUrl = embedUrl.replace('watch?v=', 'embed/');
+                    }
+                    iframe.src = embedUrl;
+                    iframe.classList.remove('hidden');
+                    noVideoMsg.classList.add('hidden');
+                } else {
+                    iframe.src = '';
+                    iframe.classList.add('hidden');
+                    noVideoMsg.classList.remove('hidden');
                 }
-                iframe.src = embedUrl;
-                iframe.classList.remove('hidden');
-                noVideoMsg.classList.add('hidden');
+
                 document.getElementById('activeLessonTitle').innerText = lesson.title || 'درس تعليمي';
                 document.getElementById('playerLessonDesc').innerText = lesson.desc || 'شرح تفصيلي للدرس والمحتوى التعليمي الخاص به.';
-            } else {
-                iframe.src = '';
-                iframe.classList.add('hidden');
-                noVideoMsg.classList.remove('hidden');
-                document.getElementById('activeLessonTitle').innerText = 'لا يوجد فيديو';
-                document.getElementById('playerLessonDesc').innerText = 'يرجى اختيار درس متاح من القائمة الجانبية.';
+
+                // إظهار/إخفاء زر تحميل الملف المرفق
+                if(lesson.fileUrl && lesson.fileUrl !== '') {
+                    fileLink.href = lesson.fileUrl;
+                    fileContainer.classList.remove('hidden');
+                } else {
+                    fileContainer.classList.add('hidden');
+                }
             }
         }
-        // ------------------------------------------------
 
         function renderEnrolledCourses() {
             const grid = document.getElementById('enrolledCoursesGrid');
