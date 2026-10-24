@@ -118,13 +118,14 @@
 
     <!-- Main Container Content Sections -->
     <main class="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8">
+        
         <!-- 1. EXPLORE SECTION -->
         <section id="view-explore" class="space-y-6">
             <div class="relative overflow-hidden rounded-3xl bg-gradient-to-r from-brand-900 via-brand-700 to-indigo-800 text-white p-6 sm:p-10 shadow-xl">
                 <div class="relative z-10 max-w-2xl space-y-3">
                     <span class="inline-block bg-white/10 backdrop-blur-md text-emerald-400 font-semibold text-xs px-3 py-1 rounded-full border border-white/10">✨ التعلم بلا حدود</span>
                     <h1 class="text-2xl sm:text-4xl font-extrabold leading-tight">مرحباً بك في منصة EduPulse التعليمية</h1>
-                    <p class="text-slate-200 text-sm sm:text-base leading-relaxed">تواصل مع زملائك والدكاترة مباشرة عبر الشات الحي، وتابع دروسك المتاحة.</p>
+                    <p class="text-slate-200 text-sm sm:text-base leading-relaxed">استعرض الدورات المعتمدة، تابع الدروس المرفوعة، وواصل تقدمك الأكاديمي.</p>
                 </div>
             </div>
 
@@ -141,7 +142,7 @@
             <div id="courseCatalogGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
         </section>
 
-        <!-- 2. PLAYER SECTION -->
+        <!-- 2. INTERACTIVE COURSE PLAYER SECTION -->
         <section id="view-player" class="hidden space-y-6">
             <div class="flex items-center justify-between bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
                 <button onclick="switchTab('explore')" class="flex items-center gap-2 text-slate-600 hover:text-brand-600 font-bold text-sm transition-colors">
@@ -152,6 +153,13 @@
                     <h3 id="playerCourseTitle" class="font-extrabold text-base text-slate-800">عنوان الدورة</h3>
                     <p id="playerCourseInstructor" class="text-xs text-slate-500">المدرب</p>
                 </div>
+                <div class="hidden sm:flex items-center gap-3">
+                    <div class="text-left">
+                        <span class="text-xs font-semibold text-slate-500 block">حالة الإنجاز</span>
+                        <span id="playerOverallPercent" class="text-sm font-bold text-brand-600">نشط</span>
+                    </div>
+                    <div class="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center border-2 border-brand-500 font-bold text-xs text-brand-700" id="playerPercentCircle">✓</div>
+                </div>
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -161,15 +169,21 @@
                             <iframe id="videoIframe" class="w-full h-full hidden" src="" frameborder="0" allowfullscreen></iframe>
                             <div id="noVideoMsg" class="text-center p-6 space-y-2">
                                 <i class="fa-solid fa-video-slash text-4xl text-slate-500"></i>
-                                <p class="text-sm text-slate-300">اختر درس للبدء في المشاهدة</p>
+                                <p class="text-sm text-slate-300">يرجى اختيار درس من القائمة للبدء في المشاهدة</p>
                             </div>
                         </div>
+                    </div>
+
+                    <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm space-y-3">
+                        <h4 id="activeLessonTitle" class="font-bold text-slate-800 text-sm">اسم الدرس</h4>
+                        <p id="playerLessonDesc" class="text-xs text-slate-600 leading-relaxed">وصف تفصيلي للدرس والمحتوى التعليمي الخاص به.</p>
                     </div>
                 </div>
 
                 <div class="bg-white rounded-2xl border border-slate-200 p-4 shadow-sm flex flex-col h-[500px]">
                     <div class="border-b border-slate-100 pb-3 mb-3">
-                        <h4 class="font-bold text-slate-800 text-sm">دروس الكورس</h4>
+                        <h4 class="font-bold text-slate-800 text-sm">فيديوهات ودروس الكورس</h4>
+                        <p class="text-xs text-slate-400" id="curriculumProgressText">0 دروس</p>
                     </div>
                     <div class="flex-1 overflow-y-auto space-y-3 pr-1" id="curriculumList"></div>
                 </div>
@@ -178,25 +192,28 @@
 
         <!-- 3. MY LEARNING SECTION -->
         <section id="view-learning" class="hidden space-y-6">
-            <h2 class="text-2xl font-extrabold text-slate-900">دوراتي المسجلة والمفتوحة</h2>
+            <div class="border-b border-slate-200 pb-4">
+                <h2 class="text-2xl font-extrabold text-slate-900">دوراتي المسجلة والمفتوحة</h2>
+                <p class="text-slate-500 text-xs mt-1">الدورات المصرح لك بفتحها عبر كود التفعيل الخاص بك.</p>
+            </div>
             <div id="enrolledCoursesGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
         </section>
 
         <!-- 4. DASHBOARD SECTION -->
         <section id="view-dashboard" class="hidden space-y-6">
-            <h2 class="text-2xl font-extrabold text-slate-900">لوحة الإحصائيات 📊</h2>
-            <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
-                <p id="dashboardStatusText" class="text-xs text-slate-600">جاري تحميل بيانات الحساب...</p>
+            <div class="border-b border-slate-200 pb-4">
+                <h2 class="text-2xl font-extrabold text-slate-900">لوحة الإحصائيات 📊</h2>
+            </div>
+            <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+                <h3 class="font-bold text-slate-800 text-sm">حالة الاشتراك النشط والكود</h3>
+                <p id="dashboardStatusText" class="text-xs text-slate-600">جاري التحقق من الصلاحيات السحابية...</p>
             </div>
         </section>
     </main>
 
-    <!-- ================= FLOATING CHAT WIDGET ================= -->
+    <!-- FLOATING CHAT WIDGET -->
     <div id="chatWidget" class="fixed bottom-5 left-5 z-50 flex flex-col items-end">
-        
-        <!-- Chat Window -->
         <div id="chatWindow" class="hidden w-80 sm:w-96 h-[460px] bg-slate-900 border border-slate-700/80 rounded-3xl shadow-2xl flex flex-col overflow-hidden mb-3 text-slate-100 backdrop-blur-xl">
-            <!-- Chat Header -->
             <div class="p-4 bg-slate-800/90 border-b border-slate-700 flex items-center justify-between">
                 <div class="flex items-center gap-2.5">
                     <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-brand-600 to-indigo-500 flex items-center justify-center text-white text-sm shadow">
@@ -204,32 +221,19 @@
                     </div>
                     <div>
                         <h4 class="font-bold text-xs text-white">الشات الجماعي للمنصة</h4>
-                        <span class="text-[10px] text-emerald-400 flex items-center gap-1">
-                            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> طلاب ودكاترة مباشر
-                        </span>
+                        <span class="text-[10px] text-emerald-400">طلاب ودكاترة مباشر</span>
                     </div>
                 </div>
-                <button onclick="toggleChat()" class="text-slate-400 hover:text-white p-1">
-                    <i class="fa-solid fa-xmark text-sm"></i>
-                </button>
+                <button onclick="toggleChat()" class="text-slate-400 hover:text-white p-1"><i class="fa-solid fa-xmark text-sm"></i></button>
             </div>
-
-            <!-- Messages Area -->
             <div id="chatMessages" class="flex-1 p-4 overflow-y-auto space-y-3 text-xs">
                 <div class="text-center py-8 text-slate-500">جاري تحميل المحادثات المباشرة...</div>
             </div>
-
-            <!-- Chat Input -->
             <form onsubmit="sendChatMessage(event)" class="p-3 bg-slate-800/50 border-t border-slate-700/80 flex items-center gap-2">
-                <input type="text" id="chatInput" placeholder="اكتب رسالتك للجميع..." required
-                    class="flex-1 bg-slate-950/80 border border-slate-700 text-white text-xs py-2.5 px-3 rounded-xl focus:outline-none focus:border-brand-500">
-                <button type="submit" class="w-9 h-9 bg-brand-600 hover:bg-brand-500 text-white rounded-xl flex items-center justify-center shrink-0 transition shadow">
-                    <i class="fa-solid fa-paper-plane text-xs"></i>
-                </button>
+                <input type="text" id="chatInput" placeholder="اكتب رسالتك للجميع..." required class="flex-1 bg-slate-950/80 border border-slate-700 text-white text-xs py-2.5 px-3 rounded-xl focus:outline-none focus:border-brand-500">
+                <button type="submit" class="w-9 h-9 bg-brand-600 hover:bg-brand-500 text-white rounded-xl flex items-center justify-center shrink-0 shadow"><i class="fa-solid fa-paper-plane text-xs"></i></button>
             </form>
         </div>
-
-        <!-- Floating Chat Button -->
         <button onclick="toggleChat()" class="w-13 h-13 p-3.5 bg-gradient-to-tr from-brand-600 to-indigo-600 text-white rounded-2xl shadow-xl hover:scale-105 transition duration-300 flex items-center justify-center gap-2">
             <i class="fa-solid fa-comments text-xl"></i>
             <span class="text-xs font-bold hidden sm:inline">الشات الحي</span>
@@ -258,42 +262,32 @@
         window.collection = collection;
         window.addDoc = addDoc;
 
-        // الاستماع الفوري لشات المنصة (Live Realtime Listen)
         window.listenToLiveChat = function() {
             const q = query(collection(db, "community_chat"), orderBy("timestamp", "asc"), limit(50));
             onSnapshot(q, (snapshot) => {
                 const messagesBox = document.getElementById('chatMessages');
+                if(!messagesBox) return;
                 if (snapshot.empty) {
-                    messagesBox.innerHTML = `<p class="text-center text-slate-500 py-6">لا توجد رسائل بعد. كن أول من يتحدث!</p>`;
+                    messagesBox.innerHTML = `<p class="text-center text-slate-500 py-6">لا توجد رسائل بعد.</p>`;
                     return;
                 }
-
                 let loggedUser = JSON.parse(localStorage.getItem('ep_logged_user')) || { name: 'طالب' };
-
                 messagesBox.innerHTML = snapshot.docs.map(docSnap => {
                     let data = docSnap.data();
                     let isMe = data.senderName === loggedUser.name;
                     let isDoctor = data.role === 'دكتور';
-
                     return `
                         <div class="flex flex-col ${isMe ? 'items-end' : 'items-start'}">
                             <div class="flex items-center gap-1.5 mb-1 text-[10px]">
-                                <span class="font-bold ${isDoctor ? 'text-emerald-400' : 'text-slate-300'}">
-                                    ${isDoctor ? '👨‍🏫 ' : ''}${data.senderName}
-                                </span>
+                                <span class="font-bold ${isDoctor ? 'text-emerald-400' : 'text-slate-300'}">${isDoctor ? '👨‍🏫 ' : ''}${data.senderName}</span>
                                 <span class="text-slate-500">${data.role || 'طالب'}</span>
                             </div>
-                            <div class="px-3.5 py-2 rounded-2xl max-w-[85%] ${
-                                isMe ? 'bg-brand-600 text-white rounded-br-none' : 
-                                isDoctor ? 'bg-emerald-950 border border-emerald-500/40 text-emerald-100 rounded-bl-none' : 
-                                'bg-slate-800 text-slate-200 rounded-bl-none'
-                            }">
+                            <div class="px-3.5 py-2 rounded-2xl max-w-[85%] ${isMe ? 'bg-brand-600 text-white rounded-br-none' : isDoctor ? 'bg-emerald-950 border border-emerald-500/40 text-emerald-100 rounded-bl-none' : 'bg-slate-800 text-slate-200 rounded-bl-none'}">
                                 ${data.message}
                             </div>
                         </div>
                     `;
                 }).join('');
-
                 messagesBox.scrollTop = messagesBox.scrollHeight;
             });
         };
@@ -318,6 +312,7 @@
 
                 renderCategoryChips();
                 renderCatalog();
+                updateBadgeCount();
                 window.listenToLiveChat();
             } catch (err) {
                 console.error("Cloud fetch error:", err);
@@ -351,10 +346,11 @@
         let categories = ['الكل', 'العلوم الطبية', 'البرمجة', 'التصميم', 'إدارة الأعمال'];
         let selectedCategory = 'الكل';
         let searchQuery = '';
+        let currentPlayingCourse = null;
+        let activeLessonIndex = 0;
 
         function toggleChat() {
-            const win = document.getElementById('chatWindow');
-            win.classList.toggle('hidden');
+            document.getElementById('chatWindow').classList.toggle('hidden');
         }
 
         async function sendChatMessage(e) {
@@ -362,9 +358,7 @@
             const input = document.getElementById('chatInput');
             const msg = input.value.trim();
             if (!msg) return;
-
             let loggedUser = JSON.parse(localStorage.getItem('ep_logged_user')) || { name: 'طالب' };
-
             try {
                 await window.addDoc(window.collection(window.db, "community_chat"), {
                     senderName: loggedUser.name,
@@ -374,7 +368,7 @@
                 });
                 input.value = '';
             } catch (err) {
-                alert('حدث خطأ في إرسال الرسالة.');
+                alert('خطأ في إرسال الرسالة.');
             }
         }
 
@@ -383,18 +377,30 @@
                 const el = document.getElementById(`view-${view}`);
                 if(el) el.classList.add('hidden');
             });
+            
+            document.querySelectorAll('.nav-tab').forEach(btn => {
+                btn.classList.remove('active', 'border-brand-600', 'text-brand-600', 'font-semibold');
+                btn.classList.add('border-transparent', 'text-slate-600');
+            });
 
             const targetView = document.getElementById(`view-${tabName}`);
             if(targetView) targetView.classList.remove('hidden');
 
+            const activeBtn = document.getElementById(`tab-${tabName}`);
+            if(activeBtn) {
+                activeBtn.classList.add('active', 'border-brand-600', 'text-brand-600', 'font-semibold');
+                activeBtn.classList.remove('border-transparent', 'text-slate-600');
+            }
+
             if(tabName === 'learning') renderEnrolledCourses();
+            if(tabName === 'dashboard') renderDashboardStats();
         }
 
         function renderCategoryChips() {
             const container = document.getElementById('categoryChips');
             if(!container) return;
             container.innerHTML = categories.map(cat => `
-                <button onclick="filterCategory('${cat}')" class="px-4 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition-all ${selectedCategory === cat ? 'bg-brand-600 text-white shadow-md' : 'bg-white border border-slate-200 text-slate-600'}">
+                <button onclick="filterCategory('${cat}')" class="px-4 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition-all ${selectedCategory === cat ? 'bg-brand-600 text-white shadow-md' : 'bg-white border border-slate-200 text-slate-600 hover:bg-slate-100'}">
                     ${cat}
                 </button>
             `).join('');
@@ -444,34 +450,141 @@
                                 ${unlocked ? 'مفتوح لك ✓' : 'مغلق'}
                             </span>
                         </div>
-                        <div class="p-5 space-y-4">
+                        <div class="p-5 space-y-4 flex-1 flex flex-col justify-between">
                             <h3 class="font-bold text-slate-800 text-sm line-clamp-2">${course.title}</h3>
-                            <button onclick="openCoursePlayer('${course.id}')" ${!unlocked ? 'disabled' : ''} class="w-full ${unlocked ? 'bg-brand-600 text-white' : 'bg-slate-200 text-slate-500'} text-xs font-bold py-2.5 rounded-xl">
-                                ${unlocked ? 'مشاهدة الدروس' : 'مغلق'}
-                            </button>
+                            ${unlocked ? `
+                                <button onclick="openCoursePlayer('${course.id}')" class="w-full bg-brand-600 hover:bg-brand-700 text-white text-xs font-bold py-2.5 rounded-xl transition-all">
+                                    مشاهدة الدروس
+                                </button>
+                            ` : `
+                                <button disabled class="w-full bg-slate-200 text-slate-500 text-xs font-bold py-2.5 rounded-xl cursor-not-allowed">
+                                    مغلق (غير مسموح)
+                                </button>
+                            `}
                         </div>
                     </div>
                 `;
             }).join('');
         }
 
+        function updateBadgeCount() {
+            const unlockedCourses = window.courses.filter(c => isCourseUnlockedForStudent(c));
+            const badge = document.getElementById('enrolledBadge');
+            if(badge) badge.innerText = unlockedCourses.length;
+        }
+
+        // --- دالة تشغيل الكورس ومشاهدة الدروس الأساسية ---
+        function openCoursePlayer(courseId) {
+            currentPlayingCourse = window.courses.find(c => c.id === courseId || c.title === courseId);
+            if(!currentPlayingCourse) {
+                alert('عذراً، لم يتم العثور على بيانات هذا الكورس.');
+                return;
+            }
+
+            if(!isCourseUnlockedForStudent(currentPlayingCourse)) {
+                alert('هذا الكورس غير مخصص لصلاحيات كودك الحالي.');
+                return;
+            }
+
+            activeLessonIndex = 0;
+            document.getElementById('playerCourseTitle').innerText = currentPlayingCourse.title || 'عنوان الكورس';
+            document.getElementById('playerCourseInstructor').innerText = `المدرب: ${currentPlayingCourse.instructor || currentPlayingCourse.teacherName || 'المنصة'}`;
+
+            renderCurriculum();
+            loadActiveLesson();
+            switchTab('player');
+        }
+
+        function renderCurriculum() {
+            if(!currentPlayingCourse) return;
+            const list = document.getElementById('curriculumList');
+            const lessons = currentPlayingCourse.lessons || [];
+            
+            document.getElementById('curriculumProgressText').innerText = `${lessons.length} دروس متاحة`;
+
+            if(lessons.length === 0) {
+                list.innerHTML = `<div class="text-center py-8 text-slate-400 text-xs font-semibold">لا توجد فيديوهات مرفوعة لهذا الكورس بعد.</div>`;
+                return;
+            }
+
+            list.innerHTML = lessons.map((lesson, idx) => `
+                <div onclick="selectLesson(${idx})" class="p-3.5 rounded-xl border transition-all cursor-pointer flex items-center justify-between ${idx === activeLessonIndex ? 'bg-brand-50 border-brand-300 shadow-sm' : 'bg-slate-50 hover:bg-slate-100 border-slate-200'}">
+                    <div class="flex items-center gap-3">
+                        <div class="w-7 h-7 rounded-full bg-brand-100 text-brand-700 flex items-center justify-center font-bold text-xs">${idx + 1}</div>
+                        <div>
+                            <p class="text-xs font-bold ${idx === activeLessonIndex ? 'text-brand-700' : 'text-slate-800'}">${lesson.title}</p>
+                            <span class="text-[10px] text-slate-400"><i class="fa-regular fa-clock ml-1"></i>${lesson.duration || '15:00'}</span>
+                        </div>
+                    </div>
+                    <i class="fa-solid fa-play text-brand-600 text-xs"></i>
+                </div>
+            `).join('');
+        }
+
+        function selectLesson(idx) {
+            activeLessonIndex = idx;
+            renderCurriculum();
+            loadActiveLesson();
+        }
+
+        function loadActiveLesson() {
+            if (!currentPlayingCourse || !currentPlayingCourse.lessons) return;
+            const lessons = currentPlayingCourse.lessons || [];
+            const lesson = lessons[activeLessonIndex];
+            const iframe = document.getElementById('videoIframe');
+            const noVideoMsg = document.getElementById('noVideoMsg');
+
+            if(lesson && lesson.videoUrl) {
+                let embedUrl = lesson.videoUrl;
+                if (embedUrl.includes('watch?v=')) {
+                    embedUrl = embedUrl.replace('watch?v=', 'embed/');
+                }
+                iframe.src = embedUrl;
+                iframe.classList.remove('hidden');
+                noVideoMsg.classList.add('hidden');
+                document.getElementById('activeLessonTitle').innerText = lesson.title || 'درس تعليمي';
+                document.getElementById('playerLessonDesc').innerText = lesson.desc || 'شرح تفصيلي للدرس والمحتوى التعليمي الخاص به.';
+            } else {
+                iframe.src = '';
+                iframe.classList.add('hidden');
+                noVideoMsg.classList.remove('hidden');
+                document.getElementById('activeLessonTitle').innerText = 'لا يوجد فيديو';
+                document.getElementById('playerLessonDesc').innerText = 'يرجى اختيار درس متاح من القائمة الجانبية.';
+            }
+        }
+        // ------------------------------------------------
+
         function renderEnrolledCourses() {
             const grid = document.getElementById('enrolledCoursesGrid');
             const unlockedCourses = window.courses.filter(c => isCourseUnlockedForStudent(c));
 
             if(unlockedCourses.length === 0) {
-                grid.innerHTML = `<div class="col-span-full text-center py-12 bg-white rounded-2xl border border-slate-200 text-xs text-slate-500">لا توجد كورسات مفتوحة لك.</div>`;
+                grid.innerHTML = `<div class="col-span-full text-center py-12 bg-white rounded-2xl border border-slate-200 text-xs text-slate-500">لا توجد كورسات مفتوحة لك حالياً.</div>`;
                 return;
             }
 
             grid.innerHTML = unlockedCourses.map(c => `
                 <div class="bg-white rounded-2xl border border-slate-200 p-5 space-y-4 shadow-sm">
                     <h4 class="font-bold text-slate-800 text-sm">${c.title}</h4>
-                    <button onclick="openCoursePlayer('${c.id}')" class="w-full bg-brand-600 text-white text-xs font-bold py-2.5 rounded-xl">
-                        متابعة الدروس
+                    <button onclick="openCoursePlayer('${c.id}')" class="w-full bg-brand-600 hover:bg-brand-700 text-white text-xs font-bold py-2.5 rounded-xl transition-all">
+                        متابعة ومشاهدة الدروس
                     </button>
                 </div>
             `).join('');
+        }
+
+        function renderDashboardStats() {
+            const statusBox = document.getElementById('dashboardStatusText');
+            if(!statusBox) return;
+            if(window.currentStudentPermission) {
+                statusBox.innerHTML = `
+                    <p class="text-emerald-600 font-bold mb-1">الحالة: كود التفعيل مفعل ✓</p>
+                    <p>اسم الطالب: <strong>${window.currentStudentPermission.student || loggedUser.name}</strong></p>
+                    <p>الكود: <code class="bg-slate-100 px-2 py-0.5 rounded text-brand-600 font-mono">${window.currentStudentPermission.code}</code></p>
+                `;
+            } else {
+                statusBox.innerHTML = `<p class="text-amber-600 font-bold">تنبيه: لم يتم العثور على صلاحيات مخصصة لكودك.</p>`;
+            }
         }
     </script>
 </body>
