@@ -68,6 +68,30 @@
         </div>
     </div>
 
+    <!-- MANAGE LESSONS MODAL -->
+    <div id="lessonsModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm hidden">
+        <div class="glass-card max-w-2xl w-full p-6 rounded-3xl space-y-4 border border-emerald-500/30 shadow-2xl flex flex-col max-h-[85vh]">
+            <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+                <div>
+                    <h3 id="lessonsModalTitle" class="text-base font-bold text-white">إدارة حصص الكورس</h3>
+                    <p class="text-xs text-slate-400 mt-0.5">يمكنك الاطلاع على الحصص المرفوعة وحذف أي حصة منها</p>
+                </div>
+                <button onclick="closeLessonsModal()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            
+            <input type="hidden" id="lessonsModalCourseId">
+            
+            <!-- Lessons List Area -->
+            <div id="lessonsModalContainer" class="flex-1 overflow-y-auto space-y-3 p-1">
+                <div class="text-center py-8 text-slate-500 text-xs">جاري تحميل دروس الكورس...</div>
+            </div>
+
+            <div class="flex justify-end border-t border-slate-800 pt-3">
+                <button onclick="closeLessonsModal()" class="px-6 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold rounded-xl">إغلاق</button>
+            </div>
+        </div>
+    </div>
+
     <!-- ADMIN AUTH LOGIN OVERLAY -->
     <div id="admin-login-overlay" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/90 backdrop-blur-md">
         <div class="glass-card max-w-md w-full p-8 rounded-3xl space-y-6 border border-indigo-500/30 text-center shadow-2xl">
@@ -182,7 +206,7 @@
                 </button>
                 <button id="nav-btn-courses" onclick="switchSection('courses')" class="pb-3 text-sm font-semibold text-slate-400 hover:text-white transition flex items-center gap-2 border-b-2 border-transparent">
                     <i class="fa-solid fa-layer-group text-xs"></i>
-                    <span>إدارة الكورسات والدروس</span>
+                    <span>إدارة الكورسات والدروس الحالية</span>
                 </button>
                 <button id="nav-btn-teachers" onclick="switchSection('teachers')" class="pb-3 text-sm font-semibold text-slate-400 hover:text-white transition flex items-center gap-2 border-b-2 border-transparent">
                     <i class="fa-solid fa-user-doctor text-xs"></i>
@@ -296,7 +320,7 @@
                     </form>
                 </div>
                 <div class="space-y-4">
-                    <h3 class="text-sm font-bold text-white">جميع الكورسات الحالية</h3>
+                    <h3 class="text-sm font-bold text-white">جميع الكورسات والحصص المرفوعة</h3>
                     <div id="courses-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5"></div>
                 </div>
             </div>
@@ -569,7 +593,6 @@
             }
         }
 
-        // --- وظائف التعديل المباشر للصلاحيات ---
         function openEditModal(type, id) {
             const modal = document.getElementById('editModal');
             const container = document.getElementById('editModalCheckboxes');
@@ -619,7 +642,70 @@
                 showToast('خطأ', 'فشل تحديث الصلاحيات.', 'error');
             }
         }
-        // -------------------------------------
+
+        // ================= إدارة وحذف حصص الكورس =================
+        function openLessonsModal(courseId) {
+            const modal = document.getElementById('lessonsModal');
+            const container = document.getElementById('lessonsModalContainer');
+            document.getElementById('lessonsModalCourseId').value = courseId;
+
+            const course = window.globalCourses.find(c => c.id === courseId);
+            if (!course) return;
+
+            document.getElementById('lessonsModalTitle').innerText = `إدارة حصص: ${course.title}`;
+
+            const lessons = course.lessons || [];
+
+            if (lessons.length === 0) {
+                container.innerHTML = `<div class="text-center py-8 text-slate-500 text-xs font-semibold">لا توجد حصص مرفوعة لهذا الكورس حالياً.</div>`;
+            } else {
+                container.innerHTML = lessons.map((lesson, idx) => `
+                    <div class="p-3.5 bg-slate-900/80 rounded-xl border border-slate-800 flex items-center justify-between gap-3">
+                        <div class="flex items-center gap-3">
+                            <span class="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 font-bold text-xs flex items-center justify-center">${idx + 1}</span>
+                            <div>
+                                <h4 class="font-bold text-xs text-white">${lesson.title}</h4>
+                                <span class="text-[10px] text-slate-400"><i class="fa-regular fa-clock ml-1"></i>المدة: ${lesson.duration || 'غير محدودة'}</span>
+                            </div>
+                        </div>
+                        <button onclick="deleteSpecificLesson('${courseId}', ${idx})" class="px-3 py-1.5 bg-rose-500/20 hover:bg-rose-500/30 text-rose-400 rounded-lg text-xs font-bold transition flex items-center gap-1">
+                            <i class="fa-solid fa-trash-can"></i>
+                            <span>حذف الحصة</span>
+                        </button>
+                    </div>
+                `).join('');
+            }
+
+            modal.classList.remove('hidden');
+        }
+
+        function closeLessonsModal() {
+            document.getElementById('lessonsModal').classList.add('hidden');
+        }
+
+        async function deleteSpecificLesson(courseId, lessonIndex) {
+            if (!confirm('هل أنت متأكد من حذف هذه الحصة نهائياً من هذا الكورس؟')) return;
+
+            try {
+                const course = window.globalCourses.find(c => c.id === courseId);
+                if (!course) return;
+
+                let updatedLessons = course.lessons || [];
+                updatedLessons.splice(lessonIndex, 1); // مسح الحصة المحددة
+
+                await window.updateDoc(window.doc(window.db, "courses", courseId), {
+                    lessons: updatedLessons
+                });
+
+                showToast('تم الحذف', 'تم مسح الحصة بنجاح من السحابة.', 'success');
+                await window.loadCloudData();
+                openLessonsModal(courseId); // إعادة تحديث القائمة المفتوحة
+            } catch (err) {
+                console.error("Delete lesson error:", err);
+                showToast('خطأ', 'فشل حذف الحصة.', 'error');
+            }
+        }
+        // ========================================================
 
         async function deleteTeacher(id) {
             if(confirm('هل أنت متأكد من حذف هذا الدكتور؟')) {
@@ -754,10 +840,10 @@
         }
 
         async function deleteCourse(id) {
-            if(confirm('هل أنت متأكد من حذف هذا الكورس؟')) {
+            if(confirm('هل أنت متأكد من حذف هذا الكورس بالكامل بما يحتويه من حصص؟')) {
                 try {
                     await window.deleteDoc(window.doc(window.db, "courses", id));
-                    showToast('تم الحذف', 'تم إزالة الكورس.', 'error');
+                    showToast('تم الحذف', 'تم إزالة الكورس بالكامل.', 'error');
                     window.loadCloudData();
                 } catch(err) {
                     showToast('خطأ', 'فشل الحذف.', 'error');
@@ -772,19 +858,31 @@
                 return;
             }
 
-            grid.innerHTML = window.globalCourses.map(c => `
-                <div class="glass-card rounded-2xl overflow-hidden flex flex-col justify-between border border-slate-700/50">
-                    <div class="p-4 space-y-2">
-                        <h4 class="font-bold text-sm text-white line-clamp-1">${c.title}</h4>
-                        <p class="text-xs text-slate-400">${c.category || 'عام'} - <span class="text-emerald-400">${c.price || 'مجاناً'}</span></p>
+            grid.innerHTML = window.globalCourses.map(c => {
+                const lessonsCount = c.lessons ? c.lessons.length : 0;
+                return `
+                    <div class="glass-card rounded-2xl overflow-hidden flex flex-col justify-between border border-slate-700/50">
+                        <div class="p-4 space-y-2">
+                            <div class="flex items-center justify-between">
+                                <h4 class="font-bold text-sm text-white line-clamp-1">${c.title}</h4>
+                                <span class="px-2 py-0.5 bg-emerald-500/20 text-emerald-400 text-[10px] font-bold rounded-md">
+                                    ${lessonsCount} حصة
+                                </span>
+                            </div>
+                            <p class="text-xs text-slate-400">${c.category || 'عام'} - <span class="text-emerald-400">${c.price || 'مجاناً'}</span></p>
+                        </div>
+                        <div class="p-4 pt-0 flex items-center gap-2">
+                            <button onclick="openLessonsModal('${c.id}')" class="flex-1 py-2 bg-indigo-600/20 hover:bg-indigo-600/30 text-indigo-300 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1">
+                                <i class="fa-solid fa-list-check"></i>
+                                <span>إدارة الحصص</span>
+                            </button>
+                            <button onclick="deleteCourse('${c.id}')" class="p-2 bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 rounded-xl text-xs font-bold transition" title="حذف الكورس بالكامل">
+                                <i class="fa-solid fa-trash-can"></i>
+                            </button>
+                        </div>
                     </div>
-                    <div class="p-4 pt-0">
-                        <button onclick="deleteCourse('${c.id}')" class="w-full py-2 bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 rounded-xl text-xs font-bold transition">
-                            حذف الكورس
-                        </button>
-                    </div>
-                </div>
-            `).join('');
+                `;
+            }).join('');
         }
     </script>
 </body>
